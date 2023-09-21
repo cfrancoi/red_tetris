@@ -1,8 +1,15 @@
 {
-  "name": "red_tetris",
-  "private": true,
-  "version": "0.0.0",
+  "name": "tetris",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
   "dependencies": {
+    "express": "^4.18.2"
   }
-
 }
