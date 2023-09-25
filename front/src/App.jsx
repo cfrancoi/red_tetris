@@ -2,8 +2,8 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-import Cell from './tetris/Cell'
-import TetrisTable from './tetris/TetrisTable'
+import Cell from './components/tetris/Cell'
+import TetrisTable from './components/tetris/TetrisTable'
 
 function App() {
   const [count, setCount] = useState(0)
