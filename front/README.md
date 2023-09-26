@@ -14,3 +14,7 @@ Currently, two official plugins are available:
 - [react - redux - auth](https://www.youtube.com/watch?v=EDRd5aXMDjA)
 - [redix - redux - auth](https://www.bezkoder.com/react-hooks-redux-login-registration-example/)
 - [react-redux (fr)](https://www.youtube.com/watch?v=1lvnT2oE0_4)
+
+
+
+- [nav bar](https://blog.logrocket.com/create-responsive-navbar-react-css/)
