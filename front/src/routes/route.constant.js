@@ -11,5 +11,11 @@ export const routes = [
         name: "home",
         isLoggedIn: false,
         roles: []
+    },
+    {
+        href: "/game/tetris",
+        name: "tetris",
+        isLoggedIn: false,
+        roles: []
     }
 ]
