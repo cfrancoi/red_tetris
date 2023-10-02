@@ -56,7 +56,7 @@ db.mongoose
     Role.estimatedDocumentCount()
       .then(count => {
         
-        console.log(`count === ${count}`)
+      
         if (count === 0) {
           new Role({
             name: "user"
