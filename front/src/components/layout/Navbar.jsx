@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 import './navbar.css'
 import { Link } from 'react-router-dom';
+import Logout from '../auth/Logout';
 
 
 //TODO transalte
@@ -14,7 +15,7 @@ export default function Navbar({routes}) {
     return(
         <nav className="navigation">
             <Link to="/" className="brand-name">
-                MacroSoft
+                RedTetris
             </Link>
             <button className="hamburger">
                 {/* icon from heroicons.com */}
@@ -42,7 +43,7 @@ export default function Navbar({routes}) {
                                 </li>
                             )
                     })}
-                    {(auth?.isLoggedIn) ? null : <li>  <a href="login">login</a> </li>}
+                    {(auth?.isLoggedIn) ?<li> <Logout /> </li> : <li>  <a href="login">login</a> </li>}
                 </ul>
             </div>
         </nav>
