@@ -13,12 +13,8 @@ exports.signup = (req, res) => {
     password: bcrypt.hashSync(req.body.password, 8)
   });
 
-  user.save((err, user) => {
-    if (err) {
-      res.status(500).send({ message: err });
-      return;
-    }
-
+  user.save()
+  .then((user) => {
     if (req.body.roles) {
       Role.find(
         {
@@ -31,14 +27,14 @@ exports.signup = (req, res) => {
           }
 
           user.roles = roles.map(role => role._id);
-          user.save(err => {
-            if (err) {
-              res.status(500).send({ message: err });
-              return;
-            }
-
+          user.save()
+          .then(_ => {
             res.send({ message: "User was registered successfully!" });
-          });
+          })
+          .catch(err => {
+              res.status(500).send({ message: err });
+          })
+          
         }
       );
     } else {
@@ -59,7 +55,13 @@ exports.signup = (req, res) => {
         });
       });
     }
-  });
+  })
+  .catch(err => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
+    }
+  })
 };
 
 exports.signin = (req, res) => {
@@ -67,12 +69,8 @@ exports.signin = (req, res) => {
     username: req.body.username
   })
     .populate("roles", "-__v")
-    .exec((err, user) => {
-      if (err) {
-        res.status(500).send({ message: err });
-        return;
-      }
-
+    .exec()
+    .then((user) => {
       if (!user) {
         return res.status(404).send({ message: "User Not found." });
       }
@@ -109,5 +107,8 @@ exports.signin = (req, res) => {
         roles: authorities,
         accessToken: token
       });
-    });
+    })
+    .catch(err => {
+      res.status(500).send({ message: err });
+    })
 };
