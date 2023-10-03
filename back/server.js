@@ -1,13 +1,22 @@
 const express = require('express');
 const cors = require("cors");
 const morgan = require('morgan');
-const app = express()
 
+const app = express();
+const http = require('http');
+const server = http.createServer(app);
+const{Server} = require("socket.io");
+const io = new Server(server);
+const path = require('path')
+/*
 var corsOptions ={
   origin:"http://localhost:8081"
-};
+};*/
 
-app.use(cors(corsOptions));
+
+
+
+//app.use(cors(corsOptions));
 
 
 app.use(morgan('dev'))
@@ -21,8 +30,17 @@ app.use(express.urlencoded({ extended: true }));
 
 //simple route
 app.get('/', (req, res) => {
-  res.json({message : "Hello adventurer welcome to project!"})
+  res.sendFile(path.join(__dirname , 'index.html'));
+  //res.json({message : "Hello adventurer welcome to project!"})
 })
+
+io.on('connection', (socket) => {
+  console.log('a user connected');
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  });
+});
+
 
 // routes
 require('./routes/auth.routes')(app);
@@ -34,6 +52,8 @@ const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 })
+
+
 
 const db = require("./models");
 const Role = db.role;
