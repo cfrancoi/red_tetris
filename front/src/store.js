@@ -1,4 +1,5 @@
 import { configureStore, createSlice } from "@reduxjs/toolkit";
+import tetrisSlice from "./slice/tetrisSlice";
 
 
 
@@ -53,6 +54,7 @@ const authSlice = createSlice({
 
 export const store = configureStore({
     reducer: {
-        auth: authSlice.reducer
+        auth: authSlice.reducer,
+        tetris: tetrisSlice.reducer
     }
 })

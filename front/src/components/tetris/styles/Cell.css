@@ -8,9 +8,15 @@
     border-width: 1px;
 }
 
-.redCell {
+.ICell {
     background-color: red;
 }
+
+
+.LCell {
+    background-color: blue;
+}
+
 
 .line {
     display: flex;
