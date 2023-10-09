@@ -4,31 +4,11 @@ import { I_TETROMINO, L_TETROMINO } from '../components/tetris/tetrominos-consta
 const defaultHeight = 20;
 const defaultWidth = 10;
 
-// function draw(table, pos, color, tetromino) {
-//     let x = pos.x;
-//     let y = pos.y;
-//     console.log(table.length)
-//     console.log(tetromino[0].length)
 
 
-
-//     for(let b = 0; b < tetromino.length; b++) {
-
-//       for (let a = 0; tetromino[b].length > a; a++) {
-        
-//         if ( x < table.length && y < table[x].length) {
-//           table[x][y].type = tetromino[b][a];
-//         }
-//         y++;
-//       }
-//       y = pos.y;
-//       x++;
-//     }
-
-//     // return table;
-//   }
-
-
+/**
+ * * * UTILS * * *
+ */
 
 function rotateMatrix(matrix) {
   const rows = matrix.length;
@@ -45,8 +25,6 @@ function rotateMatrix(matrix) {
 
   return rotatedMatrix;
 }
-
-
 
 function updateGameGrid(gameGrid, currentPiece, newPieceGrid, fixed = false) {
   if (currentPiece.position) {
@@ -72,90 +50,144 @@ function updateGameGrid(gameGrid, currentPiece, newPieceGrid, fixed = false) {
       });
     });
   }
-  }
+}
 
 
 /**
  *  MOVE CHECK //TODO
- */
-
+*/
 
 function canMoveDown(grid, currentPiece) {
   return true;
 }
 
 function canMoveLeft(grid, currentPiece) {
-
-  
   return (currentPiece.position.x && currentPiece.position.x > 0);
 }
 
 function canMoveRight(grid, currentPiece) {
-
   return true
-  // return (currentPiece.position.x < grid[0].lenght - 1);
 }
 
 const tetrisSlice = createSlice({
     name: "tetris",
     initialState: {
-        currentPiece: {
-          position: { x:0, y:0 },
-          grid: L_TETROMINO,
+      roomId: null,
+      options: {
+        height: defaultHeight,
+        width: defaultWidth
+      },
+      players: [
+        {
+          score: 0,
+          currentPiece: {
+            position: { x:0, y:0 },
+            grid: L_TETROMINO,
+          },
+          grid: Array.from(Array(defaultHeight), () => new Array(defaultWidth).fill({}))
         },
-        grid: Array.from(Array(defaultHeight), () => new Array(defaultWidth).fill({}))
+        {
+          score: 0,
+          currentPiece: null,
+          grid: Array.from(Array(defaultHeight), () => new Array(defaultWidth).fill({}))
+        }
+      ]
     },
     reducers: {
         moveDown: (state, action) => {
-          if (canMoveDown(state.grid, state.currentPiece)) {
+          if (action.payload.playerIndex !== undefined || action.payload.playerIndex !== null )
+          {
+            let player = state.players[action.payload.playerIndex];
+            if (canMoveDown(player.grid, player.currentPiece)) {
             
-            state.currentPiece.position = { x: state.currentPiece.position.x, y: state.currentPiece.position.y + 1};
-
-            updateGameGrid(state.grid, state.currentPiece, state.currentPiece.grid, false);
-
-            console.log(current(state.currentPiece));
+              player.currentPiece.position = { x: player.currentPiece.position.x, y: player.currentPiece.position.y + 1};
+  
+              updateGameGrid(player.grid, player.currentPiece, player.currentPiece.grid, false);
+  
+              console.log(current(player.currentPiece));
+            }
           }
-
         },
         moveLeft: (state, action) => {
-          if (canMoveLeft(state.grid, state.currentPiece)) {
+          if (action.payload.playerIndex !== undefined || action.payload.playerIndex !== null )
+          {
+            let player = state.players[action.payload.playerIndex];
+            if (canMoveLeft(player.grid, player.currentPiece)) {
             
-            state.currentPiece.position = { x: state.currentPiece.position.x -1, y: state.currentPiece.position.y};
-
-            updateGameGrid(state.grid, state.currentPiece, state.currentPiece.grid);
-
-            console.log(current(state.currentPiece));
+              player.currentPiece.position = { x: player.currentPiece.position.x - 1, y: player.currentPiece.position.y};
+  
+              updateGameGrid(player.grid, player.currentPiece, player.currentPiece.grid, false);
+  
+              console.log(current(player.currentPiece));
+            }
           }
-
         },
         moveRight: (state, action) => {
-          if (canMoveRight(state.grid, state.currentPiece)) {
+          if (action.payload.playerIndex !== undefined || action.payload.playerIndex !== null )
+          {
+            let player = state.players[action.payload.playerIndex];
+            if (canMoveRight(player.grid, player.currentPiece)) {
             
-            state.currentPiece.position = { x: state.currentPiece.position.x + 1, y: state.currentPiece.position.y};
-
-            updateGameGrid(state.grid, state.currentPiece, state.currentPiece.grid);
-
-            console.log(current(state.currentPiece));
+              player.currentPiece.position = { x: player.currentPiece.position.x + 1, y: player.currentPiece.position.y};
+  
+              updateGameGrid(player.grid, player.currentPiece, player.currentPiece.grid, false);
+  
+              console.log(current(player.currentPiece));
+            }
           }
 
-        },
-        moveTetromino : (state, action) => {
-          state.pos = action.payload.pos
-
-          return state
         },
         rotatePiece: (state, action) => {
-          if (state.currentPiece) {
-            const { grid } = state.currentPiece;
-            const newGrid = rotateMatrix(grid); // Appel à une fonction de rotation
-    
-            // Mettez à jour la grille de la pièce en cours avec la nouvelle grille pivotée
-            state.currentPiece.grid = newGrid;
-    
-            // Utilisez la fonction réutilisable pour mettre à jour la grille du jeu
-            updateGameGrid(state.grid, state.currentPiece, newGrid, false);
+          if (action.payload.playerIndex !== undefined || action.payload.playerIndex !== null )
+          {
+            let player = state.players[action.payload.playerIndex];
+            {
+              if (player.currentPiece) {
+                const { grid } = player.currentPiece;
+                const newGrid = rotateMatrix(grid); // Appel à une fonction de rotation
+        
+                player.currentPiece.grid = newGrid;
+        
+                updateGameGrid(player.grid, player.currentPiece, newGrid, false);
+              }
+            }
+          }
+        },
+        blockPiece: (state, action) => {
+
+          let player = state.players[action.payload.playerIndex];
+          updateGameGrid(player.grid, player.currentPiece, player.currentPiece.grid, true);
+
+          player.currentPiece = null;
+        },
+        newPiece: (state, action) => { //TODO add new piece to payload
+
+          let player = state.players[action.payload.playerIndex];
+
+          if (!player.currentPiece) {
+
+            player.currentPiece = {
+              position: { x:0, y:0 },
+              grid: L_TETROMINO,
+            }
+
+            updateGameGrid(player.grid, player.currentPiece, player.currentPiece.grid, false);
+          }
+        },
+        
+        /**
+         *  SCORE
+        */
+        addScore: (state, action)  => {
+          if (action.payload.playerIndex !== undefined || action.payload.playerIndex !== null )
+          {
+            let player = state.players[action.payload.playerIndex];
+
+            
+            player.score += 1;
           }
         }
+
     }
 })
 

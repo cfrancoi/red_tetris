@@ -3,6 +3,7 @@ import {createBrowserRouter, createRoutesFromElements, Route} from 'react-router
 import LoginScreen from '../pages/login/Login.jsx';
 import Home from '../pages/home/Home.jsx';
 import Tetris from '../pages/game/tetris/Tetris.jsx';
+import Room from '../pages/game/room/Room.jsx';
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -10,5 +11,6 @@ export const router = createBrowserRouter(
         <Route path="/" element={<Home />} />
         <Route path="login" element={<LoginScreen />}/>
         <Route path="/game/tetris" element={<Tetris />}/>
+        <Route path="/room/:roomId" element={<Room />}/>
     </Route>
 ));
