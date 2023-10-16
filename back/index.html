@@ -23,7 +23,10 @@
     </form>
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <script>
-      var socket = io();
+      var socket = io( { path: 'api/socket.io'});
+
+
+      socket.connect();
 
       socket.on("connect", () => {
         console.log('connect')

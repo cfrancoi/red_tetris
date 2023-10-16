@@ -11,6 +11,6 @@ export const router = createBrowserRouter(
         <Route path="/" element={<Home />} />
         <Route path="login" element={<LoginScreen />}/>
         <Route path="/game/tetris" element={<Tetris />}/>
-        <Route path="/room/:roomId" element={<Room />}/>
+        <Route path="/rooms/:roomId" element={<Room />}/>
     </Route>
 ));

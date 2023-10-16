@@ -1,52 +1,44 @@
-import { createContext } from 'react'
+import { createContext, useEffect, useState, useContext } from 'react'
 import io from 'socket.io-client';
-// import { WS_BASE } from './config';
-// import { useDispatch } from 'react-redux';
+
 
 const WebSocketContext = createContext(null);
 
-export { WebSocketContext }
+// eslint-disable-next-line react-refresh/only-export-components
+export function useSocket() {
+    return useContext(WebSocketContext);
+}
+
 
 // eslint-disable-next-line react-refresh/only-export-components
 export default function WebSocketProvider({ children }) {
-    let socket;
-    let ws;
+    const [socket, setSocket] = useState(null);
+    const [isConnected, setIsConnected] = useState(false);
 
-    // const dispatch = useDispatch();
+    useEffect(() => {
+        const newSocket = io({ autoConnect: true, path: '/api/socket.io', token: "abcd" });
 
-    // const sendMessage = (roomId, message) => {
-    //     const payload = {
-    //         roomId: roomId,
-    //         data: message
-    //     }
-    //     socket.emit("event://send-message", JSON.stringify(payload));
-    //     dispatch(updateChatLog(payload));
-    // }
+        setSocket(newSocket);
 
-    if (!socket) {
-        socket = io('locahost', { autoConnect: false, token: "abcd"})
-
-        socket.connect();
-
-        socket.on("event://get-message", (msg) => {
-            const payload = JSON.parse(msg);
-            // dispatch(updateChatLog(payload));
-        })
-
-        socket.on("connect_error", (err) => {
-            if (err.message === "invalid credentials") {
-              socket.auth.token = "efgh";
-              socket.connect();
-            }
-          });
-
-        ws = {
-            socket: socket,
+        return function cleanup() {
+            newSocket.disconnect();
+            newSocket.off();
         }
-    }
+    }, []);
+
+    useEffect(() => {
+        if (socket)
+            socket.on('connect', setIsConnected(true));
+
+        return function cleanup() {
+            if (socket)
+                socket.off('connect');
+        }
+    }, [socket, setIsConnected]);
+
 
     return (
-        <WebSocketContext.Provider value={ws}>
+        <WebSocketContext.Provider value={{ socket, isConnected }}>
             {children}
         </WebSocketContext.Provider>
     )

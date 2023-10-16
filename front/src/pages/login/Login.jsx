@@ -16,41 +16,45 @@ const LoginScreen = () => {
     const submitForm = (data) => {
         console.log(data.login)
 
-         dispatch(login(data.login, data.password))
+        dispatch(login(data.login, data.password))
     }
 
     return (
         <>
-         <Navbar routes={routes} />
-        <form onSubmit={handleSubmit(submitForm)}>
-            <div className='form-group'>
-            <label htmlFor='text'>Login</label>
-            <input
-                type='text'
-                className='form-input'
-                {...register('login')}
-                required
-            />
-            </div>
-            <div className='form-group'>
-            <label htmlFor='password'>Password</label>
-            <input
-                type='password'
-                className='form-input'
-                {...register('password')}
-                required
-            />
-            </div>
-            <button type='submit' className='button'>
-                Login
-            </button>
-            
-        </form>
+            <Navbar routes={routes} />
+            <form onSubmit={handleSubmit(submitForm)}>
+                <div className='form-group'>
+                    <label htmlFor='text'>Login</label>
+                    <input
+                        type='text'
+                        className='form-input'
+                        {...register('login')}
+                        required
+                    />
+                </div>
+                <div className='form-group'>
+                    <label htmlFor='password'>Password</label>
+                    <input
+                        type='password'
+                        className='form-input'
+                        {...register('password')}
+                        required
+                    />
+                </div>
+                <button
+                    type='submit'
+                    className='button'
+                    data-testid="login-button"
+                >
+                    Login
+                </button>
+
+            </form>
 
 
-        <Register></Register>
+            {/* <Register></Register> */}
         </>
-    
+
     )
 }
 export default LoginScreen

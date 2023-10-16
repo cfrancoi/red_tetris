@@ -186,8 +186,10 @@ const tetrisSlice = createSlice({
             
             player.score += 1;
           }
+        },
+        setRoomId: (state, action) => {
+          return ({...state, roomId: action.roomId})
         }
-
     }
 })
 
