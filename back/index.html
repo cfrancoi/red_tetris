@@ -16,13 +16,37 @@
     </style>
   </head>
   <body>
+    <button onclick="onClick()">Send</button>
     <ul id="messages"></ul>
-    <form id="form" action="">
-      <input id="input" autocomplete="off" /><button>Send</button>
+    <form id="form" action="" >
+      <input id="input" autocomplete="off"  /><button >Send</button>
     </form>
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <script>
       var socket = io();
+
+      socket.on("connect", () => {
+        console.log('connect')
+      });
+
+
+      function onClick() {
+        console.log('click');
+
+      }
+      var form = document.getElementById('form');
+        var input = document.getElementById('input');
+
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          socket.emit("hello", "world");
+          if (input.value) {
+           console.log('emit');
+
+            socket.emit('try', input.value);
+              input.value = '';
+            }
+        });
     </script>
   </body>
 </html>
