@@ -1,13 +1,20 @@
 const express = require('express');
-const cors = require("cors");
 const morgan = require('morgan');
-const app = express()
+const path = require('path');
 
+const app = express();
+const http = require('http');
+const server = http.createServer(app);
+/*
+/*
 var corsOptions ={
   origin:"http://localhost:8081"
-};
+};*/
 
-app.use(cors(corsOptions));
+
+
+
+//app.use(cors(corsOptions));
 
 
 app.use(morgan('dev'))
@@ -21,8 +28,12 @@ app.use(express.urlencoded({ extended: true }));
 
 //simple route
 app.get('/', (req, res) => {
-  res.json({message : "Hello adventurer welcome to project!"})
+  res.sendFile(path.join(__dirname , 'index.html'));
+  //res.json({message : "Hello adventurer welcome to project!"})
 })
+
+
+
 
 // routes
 require('./routes/auth.routes')(app);
@@ -31,9 +42,11 @@ require('./routes/user.routes')(app);
 
 //set port
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 })
+
+require('./socket/socket')(server);
 
 const db = require("./models");
 const Role = db.role;
@@ -88,4 +101,6 @@ db.mongoose
     
         }
       })
-    }
+  }
+
+  module.exports = app;
