@@ -1,13 +1,11 @@
 const express = require('express');
-const cors = require("cors");
 const morgan = require('morgan');
+const path = require('path');
 
 const app = express();
 const http = require('http');
 const server = http.createServer(app);
-const{Server} = require("socket.io");
-const io = new Server(server);
-const path = require('path')
+/*
 /*
 var corsOptions ={
   origin:"http://localhost:8081"
@@ -34,12 +32,7 @@ app.get('/', (req, res) => {
   //res.json({message : "Hello adventurer welcome to project!"})
 })
 
-io.on('connection', (socket) => {
-  console.log('a user connected');
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
-  });
-});
+
 
 
 // routes
@@ -53,7 +46,7 @@ server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 })
 
-
+require('./socket/socket')(server);
 
 const db = require("./models");
 const Role = db.role;
@@ -109,3 +102,5 @@ db.mongoose
         }
       })
   }
+
+  module.exports = app;
