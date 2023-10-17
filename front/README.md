@@ -68,3 +68,5 @@ Currently, two official plugins are available:
                             }}
     
 
+    startRoom{roomId: id,playerList: {}}
+    
