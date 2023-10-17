@@ -70,127 +70,129 @@ function canMoveRight(grid, currentPiece) {
 }
 
 const tetrisSlice = createSlice({
-    name: "tetris",
-    initialState: {
-      roomId: null,
-      options: {
-        height: defaultHeight,
-        width: defaultWidth
-      },
-      players: [
-        {
-          score: 0,
-          currentPiece: {
-            position: { x:0, y:0 },
-            grid: L_TETROMINO,
-          },
-          grid: Array.from(Array(defaultHeight), () => new Array(defaultWidth).fill({}))
-        },
-        {
-          score: 0,
-          currentPiece: null,
-          grid: Array.from(Array(defaultHeight), () => new Array(defaultWidth).fill({}))
-        }
-      ]
+  name: "tetris",
+  initialState: {
+    roomId: null,
+    options: {
+      height: defaultHeight,
+      width: defaultWidth
     },
-    reducers: {
-        moveDown: (state, action) => {
-          if (action.payload.playerIndex !== undefined || action.payload.playerIndex !== null )
-          {
-            let player = state.players[action.payload.playerIndex];
-            if (canMoveDown(player.grid, player.currentPiece)) {
-            
-              player.currentPiece.position = { x: player.currentPiece.position.x, y: player.currentPiece.position.y + 1};
-  
-              updateGameGrid(player.grid, player.currentPiece, player.currentPiece.grid, false);
-  
-              console.log(current(player.currentPiece));
-            }
-          }
+    players: [
+      {
+        score: 0,
+        currentPiece: {
+          position: { x: 0, y: 0 },
+          grid: L_TETROMINO,
         },
-        moveLeft: (state, action) => {
-          if (action.payload.playerIndex !== undefined || action.payload.playerIndex !== null )
-          {
-            let player = state.players[action.payload.playerIndex];
-            if (canMoveLeft(player.grid, player.currentPiece)) {
-            
-              player.currentPiece.position = { x: player.currentPiece.position.x - 1, y: player.currentPiece.position.y};
-  
-              updateGameGrid(player.grid, player.currentPiece, player.currentPiece.grid, false);
-  
-              console.log(current(player.currentPiece));
-            }
-          }
-        },
-        moveRight: (state, action) => {
-          if (action.payload.playerIndex !== undefined || action.payload.playerIndex !== null )
-          {
-            let player = state.players[action.payload.playerIndex];
-            if (canMoveRight(player.grid, player.currentPiece)) {
-            
-              player.currentPiece.position = { x: player.currentPiece.position.x + 1, y: player.currentPiece.position.y};
-  
-              updateGameGrid(player.grid, player.currentPiece, player.currentPiece.grid, false);
-  
-              console.log(current(player.currentPiece));
-            }
-          }
+        grid: Array.from(Array(defaultHeight), () => new Array(defaultWidth).fill({}))
+      },
+      {
+        score: 0,
+        currentPiece: null,
+        grid: Array.from(Array(defaultHeight), () => new Array(defaultWidth).fill({}))
+      }
+    ]
+  },
+  reducers: {
+    moveDown: (state, action) => {
+      if (action.payload.playerIndex !== undefined || action.payload.playerIndex !== null) {
+        let player = state.players[action.payload.playerIndex];
+        if (canMoveDown(player.grid, player.currentPiece)) {
 
-        },
-        rotatePiece: (state, action) => {
-          if (action.payload.playerIndex !== undefined || action.payload.playerIndex !== null )
-          {
-            let player = state.players[action.payload.playerIndex];
-            {
-              if (player.currentPiece) {
-                const { grid } = player.currentPiece;
-                const newGrid = rotateMatrix(grid); // Appel à une fonction de rotation
-        
-                player.currentPiece.grid = newGrid;
-        
-                updateGameGrid(player.grid, player.currentPiece, newGrid, false);
-              }
-            }
-          }
-        },
-        blockPiece: (state, action) => {
+          player.currentPiece.position = { x: player.currentPiece.position.x, y: player.currentPiece.position.y + 1 };
 
-          let player = state.players[action.payload.playerIndex];
-          updateGameGrid(player.grid, player.currentPiece, player.currentPiece.grid, true);
+          updateGameGrid(player.grid, player.currentPiece, player.currentPiece.grid, false);
 
-          player.currentPiece = null;
-        },
-        newPiece: (state, action) => { //TODO add new piece to payload
-
-          let player = state.players[action.payload.playerIndex];
-
-          if (!player.currentPiece) {
-
-            player.currentPiece = {
-              position: { x:0, y:0 },
-              grid: L_TETROMINO,
-            }
-
-            updateGameGrid(player.grid, player.currentPiece, player.currentPiece.grid, false);
-          }
-        },
-        
-        /**
-         *  SCORE
-        */
-        addScore: (state, action)  => {
-          if (action.payload.playerIndex !== undefined || action.payload.playerIndex !== null )
-          {
-            let player = state.players[action.payload.playerIndex];
-
-            
-            player.score += 1;
-          }
-        },
-        setRoomId: (state, action) => {
-          return ({...state, roomId: action.roomId})
+          console.log(current(player.currentPiece));
         }
+      }
+    },
+    moveLeft: (state, action) => {
+      if (action.payload.playerIndex !== undefined || action.payload.playerIndex !== null) {
+        let player = state.players[action.payload.playerIndex];
+        if (canMoveLeft(player.grid, player.currentPiece)) {
+
+          player.currentPiece.position = { x: player.currentPiece.position.x - 1, y: player.currentPiece.position.y };
+
+          updateGameGrid(player.grid, player.currentPiece, player.currentPiece.grid, false);
+
+          console.log(current(player.currentPiece));
+        }
+      }
+    },
+    moveRight: (state, action) => {
+      if (action.payload.playerIndex !== undefined || action.payload.playerIndex !== null) {
+        let player = state.players[action.payload.playerIndex];
+        if (canMoveRight(player.grid, player.currentPiece)) {
+
+          player.currentPiece.position = { x: player.currentPiece.position.x + 1, y: player.currentPiece.position.y };
+
+          updateGameGrid(player.grid, player.currentPiece, player.currentPiece.grid, false);
+
+          console.log(current(player.currentPiece));
+        }
+      }
+
+    },
+    rotatePiece: (state, action) => {
+      if (action.payload.playerIndex !== undefined || action.payload.playerIndex !== null) {
+        let player = state.players[action.payload.playerIndex];
+        if (player.currentPiece) {
+          const { grid } = player.currentPiece;
+          const newGrid = rotateMatrix(grid); // Appel à une fonction de rotation
+
+          player.currentPiece.grid = newGrid;
+
+          updateGameGrid(player.grid, player.currentPiece, newGrid, false);
+        }
+      }
+    },
+    blockPiece: (state, action) => {
+
+      let player = state.players[action.payload.playerIndex];
+      updateGameGrid(player.grid, player.currentPiece, player.currentPiece.grid, true);
+
+      player.currentPiece = null;
+    },
+    newPiece: (state, action) => { //TODO add new piece to payload
+
+      let player = state.players[action.payload.playerIndex];
+
+      if (!player.currentPiece) {
+
+        player.currentPiece = {
+          position: { x: 0, y: 0 },
+          grid: L_TETROMINO,
+        }
+
+        updateGameGrid(player.grid, player.currentPiece, player.currentPiece.grid, false);
+      }
+    },
+
+    /**
+     *  SCORE
+    */
+    addScore: (state, action) => {
+      if (action.payload.playerIndex !== undefined || action.payload.playerIndex !== null) {
+        let player = state.players[action.payload.playerIndex];
+
+
+        player.score += 1;
+      }
+    },
+    setRoomId: (state, action) => {
+      return ({ ...state, roomId: action.id })
+    },
+    addPlayerToRoom: (state, action) => {
+      let toAdd = action.players.filter(player => player || player?.id);
+      toAdd = toAdd.filter(item1 => !state.players.some(item2 => item2.id === item1.id));
+      const result = state.players.concat(toAdd);
+      console.log(result);
+      console.log(toAdd);
+
+      state.players = result;
     }
+  }
 })
 
 

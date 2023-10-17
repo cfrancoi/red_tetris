@@ -1,13 +1,13 @@
-module.exports = function(io, socket) {
 
+module.exports = function (socket, roomManager) {
     socket.on('requestRoom', (arg) => {
-        
-        //TODO all check system (permissions...)
-        socket.join(arg);
-        socket.emit('roomJoined', arg);
+        const room = roomManager.addPlayerToRoom(arg, socket);
 
-        //TODO send to room
+        if (room) {
+            socket.join(room.id);
+            socket.to(room.id).emit('roomJoined', room.toJSON())
+            socket.emit('roomJoined', room.toJSON())
+            console.log(room);
+        }
     });
- 
-    
 }

@@ -19,6 +19,9 @@ export const ADD_SCORE = `${name}/addScore`;
 
 export const SET_ROOM = `${name}/setRoomId`;
 
+export const ADD_PLAYER_TO_ROOM = `${name}/addPlayerToRoom`;
+
+
 
 
 
