@@ -1,4 +1,5 @@
 import Navbar from "../../components/layout/Navbar";
+import CreateRoom from "../../components/room/createRoom/CreateRoom";
 import { routes } from "../../routes/route.constant";
 
 export default function Home() {
@@ -8,6 +9,8 @@ export default function Home() {
             <div>
                 Home
             </div>
+
+            <CreateRoom></CreateRoom>
         </>
     )
 }

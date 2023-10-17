@@ -1,4 +1,5 @@
-import { configureStore, createSlice } from "@reduxjs/toolkit";
+import { configureStore, createSlice, combineReducers } from "@reduxjs/toolkit";
+import tetrisSlice from "./slice/tetrisSlice";
 
 
 
@@ -10,10 +11,10 @@ const authSlice = createSlice({
         isLoggedIn: true,
         user: user
     } :
-    {
-        isLoggedIn: false,
-        user: null
-    },
+        {
+            isLoggedIn: false,
+            user: null
+        },
     reducers: {
         registerSuccess: (state, action) => {
             return {
@@ -32,27 +33,28 @@ const authSlice = createSlice({
                 ...state,
                 isLoggedIn: true,
                 user: action?.payload?.user,
-              };
+            };
         },
         loginFail: (state, action) => {
             return {
                 ...state,
                 isLoggedIn: false,
                 user: null,
-              };
+            };
         },
         logout: (state, action) => {
             return {
                 ...state,
                 isLoggedIn: false,
                 user: null,
-              };
+            };
         },
     }
 })
 
 export const store = configureStore({
-    reducer: {
-        auth: authSlice.reducer
-    }
+    reducer: combineReducers({
+        auth: authSlice.reducer,
+        tetris: tetrisSlice.reducer
+    })
 })

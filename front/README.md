@@ -18,3 +18,53 @@ Currently, two official plugins are available:
 
 
 - [nav bar](https://blog.logrocket.com/create-responsive-navbar-react-css/)
+
+
+
+- [see doc](https://reactrouter.com/en/main/start/tutorial#loading-data)
+
+## NOTE
+
+
+
+* Tetris events to impl back:
+
+    /* GAME */
+    - SEND/RECV -> moveDown { roomId: id, payload: playerIndex }
+    - SEND/RECV -> moveLeft { roomId: id, payload: playerIndex }
+    - SEND/RECV -> moveRight { roomId: id, payload: playerIndex }
+    - SEND/RECV -> rotatePiece { roomId: id, payload: playerIndex }
+
+    Tetromino {
+        type,
+        rotation,
+        position
+    }
+
+    - SEND -> newPiece { payload: {
+                            roomId: id,
+                            playerIndex: number,
+                            tetromino: Tetromino,
+                        }}
+    - SEND -> blockPiece { roomId: id, payload: playerIndex }
+
+
+    //TODO event START/END:
+    START -> recevoir list des joueur options de la game.
+    END -> retoour 
+
+    /* SCORE */
+
+     - SEND -> addScore { roomId: id, payload: playerIndex }
+
+
+
+    /* ROOM */
+
+    - SEND/RCV -> requestRoom {}
+    - SEND/RCV -> joinRoom { payload: {
+                                roomId: id
+                                playerList: {}
+                            }}
+    
+

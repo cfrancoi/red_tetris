@@ -1,27 +1,13 @@
-module.exports = function(io, socket) {
 
-    socket.on('try', (arg) => {
+module.exports = function (socket, roomManager) {
+    socket.on('requestRoom', (arg) => {
+        const room = roomManager.addPlayerToRoom(arg, socket);
 
-        console.log('rcv event')
-        socket.join(arg);
+        if (room) {
+            socket.join(room.id);
+            socket.to(room.id).emit('roomJoined', room.toJSON())
+            socket.emit('roomJoined', room.toJSON())
+            console.log(room);
+        }
     });
-
-
-    //TODO move
-    io.of("/").adapter.on("create-room", (room) => {
-        console.log(`room ${room} was created`);
-      });
-
-      io.of("/").adapter.on("delete-room", (room) => {
-        console.log(`room ${room} was deleted`);
-      });
-      
-      io.of("/").adapter.on("join-room", (room, id) => {
-        console.log(`socket ${id} has joined room ${room}`);
-      });
-
-      io.of("/").adapter.on("leave-room", (room, id) => {
-        console.log(`socket ${id} has left room ${room}`);
-      }); 
-    
 }
