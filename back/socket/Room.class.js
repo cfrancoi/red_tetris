@@ -1,3 +1,4 @@
+const { estimatedDocumentCount } = require("../models/role.model");
 
 const EStatus = {
     NOT_STARTED: 0,
@@ -10,6 +11,10 @@ module.exports = class Room {
     id;
     status;
     players = [];
+    options = {
+        height: defaultHeight,
+        width: defaultWidth
+    }
 
     constructor(id, player) {
         this.id = id;
@@ -39,5 +44,30 @@ module.exports = class Room {
             status: this.status,
             players: playersToSend
         }
+    }
+    isOwner(player) {
+        return (player === this.players[0]);
+
+    }
+
+    start() {
+        if (this.status === EStatus.NOT_STARTED)
+            this.status = EStatus.IN_PROGRESS;
+
+    }
+
+    leave(id) {
+        for (let i = 0; this.player[i]; i++)
+            if (this.player[i].id === id)
+                this.removePlayer(this.players[i]);
+    }
+
+    updateOption(option) {
+
+        this.options = { ...this.options, ...option }
+        /*  if (option.height)
+              this.options.height = option.height
+          if (option.width)
+              this.options.width = option.width */
     }
 }
