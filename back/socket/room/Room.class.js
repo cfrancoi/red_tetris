@@ -1,4 +1,6 @@
-const { estimatedDocumentCount } = require("../models/role.model");
+const { estimatedDocumentCount } = require("../../models/role.model");
+
+const TetrisGame = require("../Tetris/TetrisGame.class");
 
 const EStatus = {
     NOT_STARTED: 0,
@@ -6,6 +8,9 @@ const EStatus = {
     PAUSED: 2,
     GAME_OVER: 3,
 };
+
+const defaultHeight = 20;
+const defaultWidth = 10;
 
 module.exports = class Room {
     id;
@@ -15,6 +20,7 @@ module.exports = class Room {
         height: defaultHeight,
         width: defaultWidth
     }
+    game = null;
 
     constructor(id, player) {
         this.id = id;
@@ -50,10 +56,21 @@ module.exports = class Room {
 
     }
 
-    start() {
-        if (this.status === EStatus.NOT_STARTED)
+    start(playerId, io) {
+
+        //TODO isowner
+
+        if (this.status === EStatus.NOT_STARTED) {
+
+
+            this.game = new TetrisGame(this.id, this.players, io);
             this.status = EStatus.IN_PROGRESS;
 
+            //io pour emit
+            this.game.start();
+
+            return true;
+        }
     }
 
     leave(id) {

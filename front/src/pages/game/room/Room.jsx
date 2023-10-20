@@ -5,7 +5,15 @@ import RoomPlayerList from "../../../components/room/RoomPlayerList/RoomPlayerLi
 import { useCallback, useEffect } from "react";
 import { useSocket } from "../../../context/SocketContext";
 import { ADD_PLAYER_TO_ROOM } from "../../../actions/tetris.types";
+import StartRoomComponent from "../../../components/room/startRoom/StartRoomComponent";
+import { ERoomStatus } from "../../../slice/tetrisSlice";
+import Tetris from "../tetris/Tetris";
 
+
+const toPrint = [
+    <div key={ERoomStatus.NOT_STARTED}>waiting</div>,
+    <Tetris key={ERoomStatus.IN_PROGRESS}>in game</Tetris>
+]
 
 export default function Room() {
 
@@ -29,13 +37,17 @@ export default function Room() {
         }
     }, [socket, joinRoom]);
 
+
     return (
         <>
             {roomId}
 
             <div>{tetris.roomId}</div>
             <RoomPlayerList players={tetris.players}></RoomPlayerList>
+            <StartRoomComponent></StartRoomComponent>
+            {tetris.gameState}
 
+            {toPrint[tetris.gameState]}
         </>
     )
 

@@ -33,4 +33,32 @@ module.exports = class RoomManager {
         this.rooms = this.rooms.filter(room => !room.isEmpty());
 
     }
+
+
+    startRoom(roomId, playerId, io) {
+        const idx = this.rooms.findIndex(room => room.id === roomId);
+
+        console.log(idx);
+        if (idx !== -1) {
+            const room = this.rooms[idx];
+            console.log(room);
+
+            if (room.start(playerId, io)) {
+                return room;
+            };
+        }
+    }
+
+    getRoomById(id) {
+        for (const room of this.rooms) {
+            if (room.id === id) {
+                return room;
+            }
+        }
+    }
+
+    getGameById(id) {
+        return this.getRoomById(id)?.game;
+    }
+
 }

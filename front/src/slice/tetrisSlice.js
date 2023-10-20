@@ -5,6 +5,12 @@ const defaultHeight = 20;
 const defaultWidth = 10;
 
 
+export const ERoomStatus = {
+  NOT_STARTED: 0,
+  IN_PROGRESS: 1,
+  PAUSED: 2,
+  GAME_OVER: 3,
+};
 
 /**
  * * * UTILS * * *
@@ -52,7 +58,6 @@ function updateGameGrid(gameGrid, currentPiece, newPieceGrid, fixed = false) {
   }
 }
 
-
 /**
  *  MOVE CHECK //TODO
 */
@@ -69,10 +74,15 @@ function canMoveRight(grid, currentPiece) {
   return true
 }
 
+function getPlayer(players, id) {
+  return players.find(p => p.id === id);
+}
+
 const tetrisSlice = createSlice({
   name: "tetris",
   initialState: {
     roomId: null,
+    gameState: ERoomStatus.NOT_STARTED,
     options: {
       height: defaultHeight,
       width: defaultWidth
@@ -96,7 +106,7 @@ const tetrisSlice = createSlice({
   reducers: {
     moveDown: (state, action) => {
       if (action.payload.playerIndex !== undefined || action.payload.playerIndex !== null) {
-        let player = state.players[action.payload.playerIndex];
+        let player = getPlayer(state.players, action.payload.playerId);
         if (canMoveDown(player.grid, player.currentPiece)) {
 
           player.currentPiece.position = { x: player.currentPiece.position.x, y: player.currentPiece.position.y + 1 };
@@ -109,7 +119,7 @@ const tetrisSlice = createSlice({
     },
     moveLeft: (state, action) => {
       if (action.payload.playerIndex !== undefined || action.payload.playerIndex !== null) {
-        let player = state.players[action.payload.playerIndex];
+        let player = getPlayer(state.players, action.payload.playerId);
         if (canMoveLeft(player.grid, player.currentPiece)) {
 
           player.currentPiece.position = { x: player.currentPiece.position.x - 1, y: player.currentPiece.position.y };
@@ -122,7 +132,7 @@ const tetrisSlice = createSlice({
     },
     moveRight: (state, action) => {
       if (action.payload.playerIndex !== undefined || action.payload.playerIndex !== null) {
-        let player = state.players[action.payload.playerIndex];
+        let player = getPlayer(state.players, action.payload.playerId);
         if (canMoveRight(player.grid, player.currentPiece)) {
 
           player.currentPiece.position = { x: player.currentPiece.position.x + 1, y: player.currentPiece.position.y };
@@ -136,7 +146,7 @@ const tetrisSlice = createSlice({
     },
     rotatePiece: (state, action) => {
       if (action.payload.playerIndex !== undefined || action.payload.playerIndex !== null) {
-        let player = state.players[action.payload.playerIndex];
+        let player = getPlayer(state.players, action.payload.playerId);
         if (player.currentPiece) {
           const { grid } = player.currentPiece;
           const newGrid = rotateMatrix(grid); // Appel à une fonction de rotation
@@ -149,14 +159,14 @@ const tetrisSlice = createSlice({
     },
     blockPiece: (state, action) => {
 
-      let player = state.players[action.payload.playerIndex];
+      let player = getPlayer(state.player, action.payload.playerId);
       updateGameGrid(player.grid, player.currentPiece, player.currentPiece.grid, true);
 
       player.currentPiece = null;
     },
     newPiece: (state, action) => { //TODO add new piece to payload
 
-      let player = state.players[action.payload.playerIndex];
+      let player = getPlayer(state.players, action.payload.playerId);
 
       if (!player.currentPiece) {
 
@@ -174,7 +184,7 @@ const tetrisSlice = createSlice({
     */
     addScore: (state, action) => {
       if (action.payload.playerIndex !== undefined || action.payload.playerIndex !== null) {
-        let player = state.players[action.payload.playerIndex];
+        let player = getPlayer(state.players, action.payload.playerId);
 
 
         player.score += 1;
@@ -186,11 +196,26 @@ const tetrisSlice = createSlice({
     addPlayerToRoom: (state, action) => {
       let toAdd = action.players.filter(player => player || player?.id);
       toAdd = toAdd.filter(item1 => !state.players.some(item2 => item2.id === item1.id));
+
+
+      toAdd.forEach(p => {
+        p.grid = Array.from(Array(state.options.height), () => new Array(state.options.width).fill({}))
+        p.currentPiece = null;
+        p.score = 0;
+        p.currentPiece = {
+          position: { x: 0, y: 0 },
+          grid: L_TETROMINO,
+        }
+      })
+
       const result = state.players.concat(toAdd);
       console.log(result);
       console.log(toAdd);
 
       state.players = result;
+    },
+    changeGameState: (state, action) => {
+      state.gameState = action.gameState;
     }
   }
 })

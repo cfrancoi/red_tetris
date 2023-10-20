@@ -1,4 +1,4 @@
-module.exports = function (socket, roomManager) {
+module.exports = function (socket, roomManager, io) {
   socket.on('requestRoom', (arg) => {
     const room = roomManager.addPlayerToRoom(arg, socket);
 
@@ -7,16 +7,20 @@ module.exports = function (socket, roomManager) {
       socket.to(room.id).emit('roomJoined', room.toJSON())
       socket.emit('roomJoined', room.toJSON())
       console.log(room);
-
     }
   });
 
   socket.on('startRoom', (arg) => {
-    const room = roomManager.
-      if(room){
+    console.log(arg);
+    const room = roomManager.startRoom(arg, socket, io);
 
-      }
+    //TODO payload
+    console.log(room);
 
+    if (room) {
+      socket.emit('roomStarted');
+      socket.to(room.id).emit('roomStarted');
+    }
   });
 
   socket.on('leaveRoom', (arg) => {
@@ -33,4 +37,7 @@ module.exports = function (socket, roomManager) {
   socket.on('updateRoom', (arg) => {
 
   });
+
+
+
 }
