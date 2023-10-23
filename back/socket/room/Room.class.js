@@ -63,7 +63,7 @@ module.exports = class Room {
         if (this.status === EStatus.NOT_STARTED) {
 
 
-            this.game = new TetrisGame(this.id, this.players, io);
+            this.game = new TetrisGame(this.id, this.players, io, this.options);
             this.status = EStatus.IN_PROGRESS;
 
             //io pour emit

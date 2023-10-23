@@ -1,26 +1,38 @@
 module.exports = function (socket, roomManager, io) {
 
     socket.on('moveDown', (gameId) => {
-        const game = getGameById(gameId);
+        const game = roomManager.getGameById(gameId);
 
         if (game) {
-            game.moveDown();
+            game.movePlayer(socket.id, 'down');
         }
     });
 
     //TODO impl.
-    socket.on('moveLeft', (arg) => {
+    socket.on('moveLeft', (gameId) => {
+        const game = roomManager.getGameById(gameId);
 
+        if (game) {
+            game.movePlayer(socket.id, 'left');
+        }
     });
 
     //TODO impl.
-    socket.on('moveRight', (arg) => {
+    socket.on('moveRight', (gameId) => {
+        const game = roomManager.getGameById(gameId);
 
+        if (game) {
+            game.movePlayer(socket.id, 'right');
+        }
     });
 
     //TODO impl.
-    socket.on('rotatePiece', (arg) => {
+    socket.on('rotatePiece', (gameId) => {
+        const game = roomManager.getGameById(gameId);
 
+        if (game) {
+            game.rotatePlayer(socket.id);
+        }
     });
 
 

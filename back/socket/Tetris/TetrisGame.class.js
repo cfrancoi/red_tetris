@@ -1,14 +1,31 @@
+const L_TETROMINO = [
+    [0, 'L', 0],
+    [0, 'L', 0],
+    [0, 'L', 'L'],
+]
+
+function strUcFirst(a) {
+    return (a + '').charAt(0).toUpperCase() + (a + '').substr(1);
+}
+
+
+const TetrisPlayer = require('./Player.class');
+
 module.exports = class TetrisGame {
 
     id;
     players;
     // io;
 
-    constructor(id, players, io) {
+    constructor(id, players, io, options) {
         this.id = id;
         this.io = io;
-        this.players = new Map(players); // Map to store player instances
+        this.players = new Map(); // Map to store player instances
 
+
+        players.forEach(player => {
+            this.players.set(player.id, new TetrisPlayer(player, options));
+        });
         console.log(this.players);
     }
 
@@ -35,18 +52,61 @@ module.exports = class TetrisGame {
         this.init();
         //INIT etc...
 
-        setInterval(() => { this.gameLoop(this.io) }, 2000);
+        this.Interval = setInterval(() => { this.gameLoop(this.io, this.players) }, 750);
     }
 
     kill() {
-
+        clearInterval(this.Interval);
+        io.to(this.id).emit('moveDown');
     }
 
 
-    gameLoop(io) {
+    gameLoop(io, players) {
 
 
-        io.to(this.id).emit('moveDown');
+
         console.log('game en cours...');
+
+        players.forEach((player, key) => {
+
+            this.movePlayer(key, 'down');
+        });
+    }
+
+    movePlayer(playerId, direction) {
+        const player = this.players.get(playerId)
+        const move = player?.move(direction);
+
+        if (move) {
+            this.io.to(this.id).emit(`move${strUcFirst(direction)}`, { id: playerId, fixed: move.isFixed });
+
+            if (move.isFixed) {
+                player.spawnNewPiece(L_TETROMINO, { x: 0, y: 0 })
+                this.io.to(this.id).emit('newPiece', {
+                    playerId: playerId,
+                    position: { x: 0, y: 0 },
+                    tetromino: L_TETROMINO,
+                })
+            }
+        }
+
+    }
+
+    rotatePlayer(playerId) {
+        const player = this.players.get(playerId)
+        const piece = player?.rotate();
+
+        if (piece) {
+            this.io.to(this.id).emit(`updatePiece`, { playerId: playerId, piece, fixed: piece.isFixed });
+
+            if (piece.isFixed) {
+                player.spawnNewPiece(L_TETROMINO, { x: 0, y: 0 })
+                this.io.to(this.id).emit('newPiece', {
+                    playerId: playerId,
+                    position: { x: 0, y: 0 },
+                    tetromino: L_TETROMINO,
+                })
+            }
+        }
     }
 }

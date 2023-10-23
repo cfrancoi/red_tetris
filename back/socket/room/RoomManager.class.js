@@ -44,6 +44,10 @@ module.exports = class RoomManager {
             console.log(room);
 
             if (room.start(playerId, io)) {
+
+                room.players.forEach(player => {
+                    require('../tetris.gateway')(player, this, io);
+                });
                 return room;
             };
         }
