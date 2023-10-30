@@ -8,6 +8,9 @@ import { ADD_PLAYER_TO_ROOM } from "../../../actions/tetris.types";
 import StartRoomComponent from "../../../components/room/startRoom/StartRoomComponent";
 import { ERoomStatus } from "../../../slice/tetrisSlice";
 import Tetris from "../tetris/Tetris";
+import Navbar from "../../../components/layout/Navbar";
+import { routes } from "../../../routes/route.constant";
+import RoomStatus from "../../../components/room/roomStatus/RoomStatus";
 
 
 const toPrint = [
@@ -23,23 +26,31 @@ export default function Room() {
     const tetris = useSelector(state => state.tetris);
 
     const joinRoom = useCallback((payload) => {
-        console.log('joining');
         dispatch({ type: ADD_PLAYER_TO_ROOM, players: payload.players });
+    }, [dispatch]);
+
+
+    const leftRoom = useCallback((payload) => {
+        dispatch({ type: 'tetris/removePlayer', id: payload.playerId });
     }, [dispatch]);
 
     useEffect(() => {
         if (socket) {
             socket.on('roomJoined', joinRoom);
+            socket.on('roomLeft', leftRoom);
 
             return () => {
                 socket.off('roomJoined');
+                socket.off('roomLeft');
             }
         }
-    }, [socket, joinRoom]);
+    }, [socket, joinRoom, leftRoom]);
 
 
     return (
         <>
+            <Navbar routes={routes} />
+            <RoomStatus />
             {roomId}
 
             <div>{tetris.roomId}</div>

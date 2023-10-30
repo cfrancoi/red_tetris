@@ -10,6 +10,7 @@ module.exports = class RoomManager {
     addPlayerToRoom(id, player) {
         for (const room of this.rooms) {
             if (room.id === id) {
+                room.addPlayer(player);
                 return room;
             }
         }
@@ -25,13 +26,23 @@ module.exports = class RoomManager {
 
         if (room) {
             room.removePlayer(player);
-            clearEmptyRoom();
+            this.clearEmptyRoom();
+            return this.rooms.find(room => room.id === id);
         }
     }
 
     clearEmptyRoom() {
-        this.rooms = this.rooms.filter(room => !room.isEmpty());
+        this.rooms = this.rooms.filter(room => {
+            if (room.isEmpty()) {
+                if (room.game) {
+                    room.game.kill();
+                }
 
+                room.game = null;
+                return false;
+            }
+            return true;
+        });
     }
 
 

@@ -5,7 +5,7 @@ module.exports = function (socket, roomManager, io) {
     if (room) {
       socket.join(room.id);
       socket.to(room.id).emit('roomJoined', room.toJSON())
-      socket.emit('roomJoined', room.toJSON())
+      socket.emit('roomJoined', room.toJSON(socket.id))
       console.log(room);
     }
   });
@@ -23,14 +23,13 @@ module.exports = function (socket, roomManager, io) {
     }
   });
 
-  socket.on('leaveRoom', (arg) => {
-    const room = roomManager.removePlayerFromRoom(arg, socket);
+  socket.on('leaveRoom', (roomId) => {
+    socket.leave(roomId)
+
+    const room = roomManager.removePlayerFromRoom(roomId, socket);
 
     if (room) {
-      socket.leave(room.id)
       socket.to(room.id).emit('roomLeft', { roomId: room.id, playerId: socket.id });
-      socket.emit('roomLeft', { roomId: room.id, playerId: socket.id });
-      console.log(room);
     }
   });
 

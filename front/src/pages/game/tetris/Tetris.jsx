@@ -2,6 +2,10 @@ import { useDispatch, useSelector } from "react-redux";
 import TetrisTable from "../../../components/tetris/TetrisTable";
 import { useSocket } from "../../../context/SocketContext";
 import { useEffect } from "react";
+import Navbar from "../../../components/layout/Navbar";
+import { routes } from "../../../routes/route.constant";
+
+import './styles.css'
 
 
 export default function Tetris() {
@@ -105,16 +109,14 @@ export default function Tetris() {
 
 
     return (
-        <>
+        <div className="tetris-list">
             {tetris.players.map(p => {
                 if (p.id) {
                     return (
-                        <TetrisTable key={p.id} height={20} width={10} playerId={p.id} />
+                        <TetrisTable key={p.id} height={20} width={10} playerId={p.id} isControlled={p.me} />
                     )
                 }
             })}
-            {/* <TetrisTable height={20} width={10} playerId={0} isControlled={true} />
-            <TetrisTable height={20} width={10} playerId={1} /> */}
-        </>
+        </div>
     )
 }

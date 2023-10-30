@@ -82,7 +82,7 @@ const tetrisSlice = createSlice({
   name: "tetris",
   initialState: {
     roomId: null,
-    gameState: ERoomStatus.NOT_STARTED,
+    gameState: null,
     options: {
       height: defaultHeight,
       width: defaultWidth
@@ -100,7 +100,7 @@ const tetrisSlice = createSlice({
   },
   reducers: {
     /**
-     * Si aucun playerIndex alros pour tout les joueurs. 
+     * Si aucun playerIndex alors pour tout les joueurs. 
      */
     moveDown: (state, action) => {
       console.log(action);
@@ -205,7 +205,6 @@ const tetrisSlice = createSlice({
       if (action.payload.playerIndex !== undefined || action.payload.playerIndex !== null) {
         let player = getPlayer(state.players, action.payload.playerId);
 
-
         player.score += 1;
       }
     },
@@ -214,6 +213,7 @@ const tetrisSlice = createSlice({
     },
     addPlayerToRoom: (state, action) => {
       let toAdd = action.players.filter(player => player || player?.id);
+
       toAdd = toAdd.filter(item1 => !state.players.some(item2 => item2.id === item1.id));
 
 
@@ -233,8 +233,22 @@ const tetrisSlice = createSlice({
 
       state.players = result;
     },
+    removePlayer: (state, action) => {
+      state.players = state.players.filter(p => p.id !== action.id);
+    },
     changeGameState: (state, action) => {
       state.gameState = action.gameState;
+    },
+    reset: (state, action) => {
+      state = {
+        players: [],
+        options: {
+          height: defaultHeight,
+          width: defaultWidth
+        },
+      };
+
+      return state;
     }
   }
 })

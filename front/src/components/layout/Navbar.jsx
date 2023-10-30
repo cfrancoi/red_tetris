@@ -3,6 +3,7 @@ import './navbar.css'
 import { Link } from 'react-router-dom';
 import Logout from '../auth/Logout';
 import { useSocket } from '../../context/SocketContext';
+import RoomStatus from '../room/roomStatus/RoomStatus';
 
 
 //TODO transalte
@@ -35,6 +36,9 @@ export default function Navbar({ routes }) {
                     />
                 </svg>
             </button>
+            <div style={{ margin: 'auto' }}>
+                <RoomStatus />
+            </div>
             <div
                 className="navigation-menu">
                 <ul>

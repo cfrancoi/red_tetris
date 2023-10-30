@@ -57,7 +57,6 @@ module.exports = class TetrisGame {
 
     kill() {
         clearInterval(this.Interval);
-        io.to(this.id).emit('moveDown');
     }
 
 

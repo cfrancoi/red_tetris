@@ -11,7 +11,7 @@ const EMOVE = {
   ROTATE: 'rotatePiece'
 }
 
-export default function TetrisTable({ height, width, playerId, isControlled = false }) {
+export default function TetrisTable({ height, width, playerId, isControlled }) {
   const [show, setShow] = useState(false);
 
 
@@ -28,8 +28,14 @@ export default function TetrisTable({ height, width, playerId, isControlled = fa
   }, [socket, roomId]);
 
   const onKeyPressEvent = useCallback((e) => {
-    if (e.sss === 's')
+    if (e.key === 's')
       move(EMOVE.DOWN);
+    if (e.key === 'd')
+      move(EMOVE.RIGHT);
+    if (e.key === 'a')
+      move(EMOVE.LEFT);
+    if (e.key === ' ')
+      move(EMOVE.ROTATE);
   }, [move]);
 
   useEffect(() => {

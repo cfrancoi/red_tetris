@@ -1,4 +1,6 @@
 import { createContext, useEffect, useState, useContext } from 'react'
+import { useDispatch } from 'react-redux';
+import { Outlet, useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 
 
@@ -11,9 +13,12 @@ export function useSocket() {
 
 
 // eslint-disable-next-line react-refresh/only-export-components
-export default function WebSocketProvider({ children }) {
+export default function WebSocketProvider() {
     const [socket, setSocket] = useState(null);
     const [isConnected, setIsConnected] = useState(false);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
 
     useEffect(() => {
         const newSocket = io({ autoConnect: true, path: '/api/socket.io', token: "abcd" });
@@ -27,8 +32,18 @@ export default function WebSocketProvider({ children }) {
     }, []);
 
     useEffect(() => {
-        if (socket)
+        if (socket) {
             socket.on('connect', setIsConnected(true));
+
+            socket.on('disconnect', () => {
+                setIsConnected(false)
+
+                dispatch({ type: 'tetris/reset' });
+                navigate('/');
+
+            });
+        }
+
 
         return function cleanup() {
             if (socket)
@@ -39,7 +54,7 @@ export default function WebSocketProvider({ children }) {
 
     return (
         <WebSocketContext.Provider value={{ socket, isConnected }}>
-            {children}
+            <Outlet />
         </WebSocketContext.Provider>
     )
 }

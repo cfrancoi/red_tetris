@@ -29,7 +29,9 @@ module.exports = class Room {
     }
 
     addPlayer(player) {
-        this.players.push(player);
+        if (this.players.findIndex(p => p.id === player.id) === -1) {
+            this.players.push(player);
+        }
     }
 
     removePlayer(player) {
@@ -40,10 +42,10 @@ module.exports = class Room {
         return (!(this.players) || this.players.length === 0)
     }
 
-    toJSON() {
+    toJSON(id) {
         let playersToSend = [];
 
-        this.players.forEach(player => { return playersToSend.push({ id: player.id }) });
+        this.players.forEach(player => { return playersToSend.push({ id: player.id, me: (id && player.id === id) }) });
 
         return {
             id: this.id,
@@ -51,6 +53,7 @@ module.exports = class Room {
             players: playersToSend
         }
     }
+
     isOwner(player) {
         return (player === this.players[0]);
 
