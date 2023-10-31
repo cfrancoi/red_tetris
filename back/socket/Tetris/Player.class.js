@@ -63,9 +63,14 @@ module.exports = class TetrisPlayer {
 
             if (this.canDrop()) {
                 this.currentPiece.position = { ...this.currentPiece.position, y: this.currentPiece.position.y + 1 }
+                const isFixed = false;
+                this.updateGameGrid(this.grid, this.currentPiece, this.currentPiece.grid, isFixed);
+                return { ...this.currentPiece, isFixed: isFixed };
+            }
+            else {
                 const isFixed = !this.canDrop();
                 this.updateGameGrid(this.grid, this.currentPiece, this.currentPiece.grid, isFixed);
-                return { isFixed: isFixed }
+                return { ...this.currentPiece, isFixed: isFixed };
             }
         }
 
@@ -73,19 +78,18 @@ module.exports = class TetrisPlayer {
 
             if (this.canMoveRight()) {
                 this.currentPiece.position = { ...this.currentPiece.position, x: this.currentPiece.position.x + 1 }
-                const isFixed = !this.canDrop();
+                const isFixed = false;
                 this.updateGameGrid(this.grid, this.currentPiece, this.currentPiece.grid, isFixed);
-                return { isFixed: isFixed }
+                return { ...this.currentPiece, isFixed: isFixed };
             }
         }
 
         if (direction === 'left') {
-
             if (this.canMoveLeft()) {
                 this.currentPiece.position = { ...this.currentPiece.position, x: this.currentPiece.position.x - 1 }
-                const isFixed = !this.canDrop();
+                const isFixed = false;
                 this.updateGameGrid(this.grid, this.currentPiece, this.currentPiece.grid, isFixed);
-                return { isFixed: isFixed }
+                return { ...this.currentPiece, isFixed: isFixed };
             }
         }
     }
@@ -123,26 +127,23 @@ module.exports = class TetrisPlayer {
 
             // Parcourez la grille du jeu
             gameGrid.forEach((row, rowIndex) => {
-
                 row.forEach((cell, colIndex) => {
                     if (pieceGrid[rowIndex - y] && pieceGrid[rowIndex - y][colIndex - x]) {
-                        console.log(`in x: ${x} y :${y}`)
-                        console.log(gameGrid[rowIndex][colIndex].fixed)
-
                         if (gameGrid[rowIndex][colIndex].fixed) {
                             hasColision = true;
                         }
                     }
-
                 });
             });
 
-
             pieceGrid.forEach((row, rowIndex) => {
                 row.forEach((cell, colIndex) => {
-
-                    if (cell && (!gameGrid[rowIndex + y] || !gameGrid[rowIndex + y][rowIndex + x]))
+                    if (cell && (!gameGrid[rowIndex + y] || !gameGrid[rowIndex + y][colIndex + x])) {
+                        console.log(`colision: col: ${colIndex}  row: ${rowIndex}`)
                         hasColision = true;
+                    }
+
+
                 });
             });
         }
@@ -160,9 +161,6 @@ module.exports = class TetrisPlayer {
     render() {
         // Implement rendering logic to display the game state
     }
-
-
-
 
     updateGameGrid(gameGrid, currentPiece, newPieceGrid, fixed = false) {
         if (currentPiece.position) {

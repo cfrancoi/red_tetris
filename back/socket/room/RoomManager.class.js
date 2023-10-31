@@ -49,7 +49,6 @@ module.exports = class RoomManager {
     startRoom(roomId, playerId, io) {
         const idx = this.rooms.findIndex(room => room.id === roomId);
 
-        console.log(idx);
         if (idx !== -1) {
             const room = this.rooms[idx];
             console.log(room);

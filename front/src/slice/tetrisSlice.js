@@ -166,14 +166,11 @@ const tetrisSlice = createSlice({
       }
     },
     updatePiece: (state, action) => {
-      if (action.payload.playerId !== undefined || action.payload.playerId !== null) {
+      if (action.payload.playerId !== undefined && action.payload.playerId !== null) {
         let player = getPlayer(state.players, action.payload.playerId);
-        if (player.currentPiece) {
 
-          player.currentPiece.grid = action.payload.piece.grid;
-
-          updateGameGrid(player.grid, player.currentPiece, action.payload.piece.grid, false);
-        }
+        player.currentPiece = action.payload.piece;
+        updateGameGrid(player.grid, player.currentPiece, action.payload.piece.grid, action.payload.fixed);
       }
     },
     blockPiece: (state, action) => {
@@ -183,10 +180,8 @@ const tetrisSlice = createSlice({
 
       player.currentPiece = null;
     },
-    newPiece: (state, action) => { //TODO add new piece to payload
-
+    newPiece: (state, action) => {
       let player = getPlayer(state.players, action.payload.playerId);
-
       if (!player.currentPiece) {
 
         player.currentPiece = {
@@ -239,7 +234,7 @@ const tetrisSlice = createSlice({
     changeGameState: (state, action) => {
       state.gameState = action.gameState;
     },
-    reset: (state, action) => {
+    reset: (state) => {
       state = {
         players: [],
         options: {

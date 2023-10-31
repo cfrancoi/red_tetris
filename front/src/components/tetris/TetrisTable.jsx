@@ -51,27 +51,6 @@ export default function TetrisTable({ height, width, playerId, isControlled }) {
     }
   }, [isControlled, onKeyPressEvent]);
 
-  useEffect(() => {
-    console.log(tetris);
-  }, [tetris]);
-
-
-  function blockPiece() {
-    dispatch({
-      type: 'tetris/blockPiece', payload: {
-        playerId: playerId
-      }
-    })
-  }
-
-  function newPiece() {
-    dispatch({
-      type: 'tetris/newPiece', payload: {
-        playerId: playerId
-      }
-    })
-  }
-
   return (
     <div onMouseOver={() => { setShow(true) }}
       onMouseLeave={() => { setShow(false) }}
@@ -82,12 +61,9 @@ export default function TetrisTable({ height, width, playerId, isControlled }) {
       <button onClick={() => { move(EMOVE.LEFT) }}>left</button>
       <button onClick={() => { move(EMOVE.RIGHT) }}>right</button>
       <button onClick={() => { move(EMOVE.ROTATE) }}>rotate</button>
-      <button onClick={blockPiece}>block</button>
-      <button onClick={newPiece}>new</button>
       {tetris?.grid.map((line, index) => {
         return (
           <div key={index}>
-            {/* {index} */}
             <Cell cells={line}></Cell>
           </div>
         );

@@ -20,24 +20,7 @@ export default function Tetris() {
 
     useEffect(() => {
         if (socket) {
-            socket.on('moveDown', (payload) => {
-                dispatch({
-                    type: 'tetris/moveDown', payload: {
-                        playerId: (payload.id) ? payload.id : null
-                    }
-                })
-
-                if (payload.fixed) {
-                    dispatch({
-                        type: 'tetris/blockPiece', payload: {
-                            playerId: (payload.id) ? payload.id : null
-                        }
-                    })
-                }
-            })
-
             socket.on('newPiece', (payload) => {
-                console.log(payload)
                 dispatch({
                     type: 'tetris/newPiece', payload: {
                         playerId: payload.playerId,
@@ -47,42 +30,7 @@ export default function Tetris() {
                 })
             })
 
-
-            socket.on('moveLeft', (payload) => {
-                dispatch({
-                    type: 'tetris/moveLeft', payload: {
-                        playerId: (payload.id) ? payload.id : null
-                    }
-                })
-
-                if (payload.fixed) {
-                    dispatch({
-                        type: 'tetris/blockPiece', payload: {
-                            playerId: (payload.id) ? payload.id : null
-                        }
-                    })
-                }
-            })
-
-            socket.on('moveRight', (payload) => {
-                dispatch({
-                    type: 'tetris/moveRight', payload: {
-                        playerId: (payload.id) ? payload.id : null
-                    }
-                })
-
-                if (payload.fixed) {
-                    dispatch({
-                        type: 'tetris/blockPiece', payload: {
-                            playerId: (payload.id) ? payload.id : null
-                        }
-                    })
-                }
-            })
-
             socket.on('updatePiece', (payload) => {
-
-                console.log(payload);
                 dispatch({
                     type: 'tetris/updatePiece', payload: payload
                 })
@@ -90,7 +38,7 @@ export default function Tetris() {
                 if (payload.fixed) {
                     dispatch({
                         type: 'tetris/blockPiece', payload: {
-                            playerId: (payload.id) ? payload.id : null
+                            playerId: (payload.playerId) ? payload.playerId : null
                         }
                     })
                 }

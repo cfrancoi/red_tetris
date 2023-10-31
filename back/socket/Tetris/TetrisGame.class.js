@@ -61,25 +61,21 @@ module.exports = class TetrisGame {
 
 
     gameLoop(io, players) {
-
-
-
-        console.log('game en cours...');
-
         players.forEach((player, key) => {
-
             this.movePlayer(key, 'down');
         });
     }
 
     movePlayer(playerId, direction) {
         const player = this.players.get(playerId)
-        const move = player?.move(direction);
+        const piece = player?.move(direction);
 
-        if (move) {
-            this.io.to(this.id).emit(`move${strUcFirst(direction)}`, { id: playerId, fixed: move.isFixed });
+        if (piece) {
+            this.io.to(this.id).emit(`updatePiece`, { playerId: playerId, piece: piece, fixed: piece.isFixed });
 
-            if (move.isFixed) {
+            // this.io.to(this.id).emit(`move${strUcFirst(direction)}`, { id: playerId, fixed: move.isFixed });
+
+            if (piece.isFixed) {
                 player.spawnNewPiece(L_TETROMINO, { x: 0, y: 0 })
                 this.io.to(this.id).emit('newPiece', {
                     playerId: playerId,
