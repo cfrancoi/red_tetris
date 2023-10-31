@@ -39,6 +39,10 @@
   width: 100%;
 }
 
+.navigation-room-status {
+  margin: auto;
+}
+
 
 .hamburger {
   /* // removes default border on button element */

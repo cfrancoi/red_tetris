@@ -1,4 +1,6 @@
-const { estimatedDocumentCount } = require("../models/role.model");
+const { estimatedDocumentCount } = require("../../models/role.model");
+
+const TetrisGame = require("../Tetris/TetrisGame.class");
 
 const EStatus = {
     NOT_STARTED: 0,
@@ -6,6 +8,9 @@ const EStatus = {
     PAUSED: 2,
     GAME_OVER: 3,
 };
+
+const defaultHeight = 20;
+const defaultWidth = 10;
 
 module.exports = class Room {
     id;
@@ -15,6 +20,7 @@ module.exports = class Room {
         height: defaultHeight,
         width: defaultWidth
     }
+    game = null;
 
     constructor(id, player) {
         this.id = id;
@@ -23,7 +29,9 @@ module.exports = class Room {
     }
 
     addPlayer(player) {
-        this.players.push(player);
+        if (this.players.findIndex(p => p.id === player.id) === -1) {
+            this.players.push(player);
+        }
     }
 
     removePlayer(player) {
@@ -34,10 +42,10 @@ module.exports = class Room {
         return (!(this.players) || this.players.length === 0)
     }
 
-    toJSON() {
+    toJSON(id) {
         let playersToSend = [];
 
-        this.players.forEach(player => { return playersToSend.push({ id: player.id }) });
+        this.players.forEach(player => { return playersToSend.push({ id: player.id, me: (id && player.id === id) }) });
 
         return {
             id: this.id,
@@ -45,15 +53,27 @@ module.exports = class Room {
             players: playersToSend
         }
     }
+
     isOwner(player) {
         return (player === this.players[0]);
 
     }
 
-    start() {
-        if (this.status === EStatus.NOT_STARTED)
+    start(playerId, io) {
+
+        //TODO isowner
+
+        if (this.status === EStatus.NOT_STARTED) {
+
+
+            this.game = new TetrisGame(this.id, this.players, io, this.options);
             this.status = EStatus.IN_PROGRESS;
 
+            //io pour emit
+            this.game.start();
+
+            return true;
+        }
     }
 
     leave(id) {

@@ -1,6 +1,6 @@
 const { Server } = require("socket.io");
 const http = require('http');
-const RoomManager = require('./RoomManager.class');
+const RoomManager = require('./room/RoomManager.class');
 
 module.exports = function (server) {
 
@@ -12,7 +12,7 @@ module.exports = function (server) {
     console.log('a user connected');
 
     require('./user.gateway')(socket);
-    require('./room.gateway')(socket, roomManager);
+    require('./room.gateway')(socket, roomManager, io);
 
     socket.on("disconnecting", () => {
 

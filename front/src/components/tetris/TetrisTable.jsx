@@ -1,124 +1,96 @@
 import PropTypes from 'prop-types';
 import './styles/Cell.css'
-import { useEffect, useState } from 'react';
-// import { I_TETROMINO } from './tetrominos-constant.js';
-// import { useInterval } from '../../hooks/useInterval';
+import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useSocket } from '../../context/SocketContext'
+
+const EMOVE = {
+  DOWN: 'moveDown',
+  RIGHT: 'moveRight',
+  LEFT: 'moveLeft',
+  ROTATE: 'rotatePiece'
+}
+
+export default function TetrisTable({ height, width, playerId, isControlled }) {
+  const [show, setShow] = useState(false);
 
 
+  //TODO clean me
+  const tetris = useSelector(state => (state.tetris.players.find(p => p.id === playerId)));
+  const roomId = useSelector(state => (state.tetris.roomId));
 
+  const dispatch = useDispatch();
 
-export default function TetrisTable({height, width, playerId, isControlled = false}) {
-    const [show, setShow] = useState(false);
+  const { socket } = useSocket();
 
-    const tetris = useSelector(state => state.tetris.players[playerId]);
-    const dispatch = useDispatch();
+  const move = useCallback((moveDirection) => {
+    socket.emit(moveDirection, roomId);
+  }, [socket, roomId]);
 
+  const onKeyPressEvent = useCallback((e) => {
+    if (e.key === 's')
+      move(EMOVE.DOWN);
+    if (e.key === 'd')
+      move(EMOVE.RIGHT);
+    if (e.key === 'a')
+      move(EMOVE.LEFT);
+    if (e.key === ' ')
+      move(EMOVE.ROTATE);
+  }, [move]);
 
-    //TODO bind key
-    function onKeyPressEvent(e) {
-      console.log(e.key)
+  useEffect(() => {
+    if (isControlled) {
+      console.log(' add event')
 
-      if (e.key === 's')
-        down()
-
+      window.addEventListener('keypress', onKeyPressEvent);
     }
-
-    useEffect(() => {
+    return () => {
       if (isControlled) {
-        console.log(' add event')
-
-        window.addEventListener('keypress', onKeyPressEvent);
+        window.removeEventListener('keypress', onKeyPressEvent);
       }
-      return () => {
-        if (isControlled) {
-          window.removeEventListener('keypress', onKeyPressEvent);
-        }
-      }
-    }, []);
-
-    function down() {
-      dispatch({type: 'tetris/moveDown', payload: {
-        playerIndex: playerId
-      }})
     }
-    
-    function right() {
-      dispatch({type: 'tetris/moveRight', payload: {
-        playerIndex: playerId
-      }})
-    }
-    
-    function left() {
-      dispatch({type: 'tetris/moveLeft', payload: {
-        playerIndex: playerId
-      }})
-    }
+  }, [isControlled, onKeyPressEvent]);
 
-    function rotate() {
-      dispatch({type: 'tetris/rotatePiece', payload: {
-        playerIndex: playerId
-      }})
-    }
+  return (
+    <div onMouseOver={() => { setShow(true) }}
+      onMouseLeave={() => { setShow(false) }}
 
-    function blockPiece() {
-      dispatch({type: 'tetris/blockPiece', payload: {
-        playerIndex: playerId
-      }})
-    }
+      className={show ? 'show' : ''}>
+      {show ? "true" : "flase"}
+      <button onClick={() => { move(EMOVE.DOWN) }}>down</button>
+      <button onClick={() => { move(EMOVE.LEFT) }}>left</button>
+      <button onClick={() => { move(EMOVE.RIGHT) }}>right</button>
+      <button onClick={() => { move(EMOVE.ROTATE) }}>rotate</button>
+      {tetris?.grid.map((line, index) => {
+        return (
+          <div key={index}>
+            <Cell cells={line}></Cell>
+          </div>
+        );
+      })}
 
-    function newPiece() {
-      dispatch({type: 'tetris/newPiece', payload: {
-        playerIndex: playerId
-      }})
-    }
-
-    return (
-      <div onMouseOver={() => {setShow(true)}}
-          onMouseLeave={() => {setShow(false)}}
-          
-          className={show ? 'show' : ''}>
-        {show ? "true" : "flase"}
-        <button onClick={down}>down</button>
-        <button onClick={left}>left</button>
-        <button onClick={right}>right</button>
-        <button onClick={rotate}>rotate</button>
-        <button onClick={blockPiece}>block</button>
-        <button onClick={newPiece}>new</button>
-        {tetris.grid.map((line, index) => {
-            return (
-                <div  key={index}>
-                    {/* {index} */}
-                      <Cell cells={line}></Cell>
-                </div>
-            );
-        })}
-
-        {`score: ${tetris.score} playerId: ${playerId}`}
-      </div>
-    );
-  }
+      {`score: ${tetris.score} playerId: ${playerId}`}
+    </div>
+  );
+}
 
 
-function Cell({cells}) {
-    return (
-      <div className='line'>
-        {cells.map((cell, index) => {
-          if (cell.type)
-            console.log(cell.type);
+function Cell({ cells }) {
+  return (
+    <div className='line'>
+      {cells.map((cell, index) => {
+        return (
+          <div className={`defaultCell ${(cell.type != 'default') ? cell.type + 'Cell' : ''}`} key={index}>
+            {/* {cell.color} */}
+          </div>
+        )
+      })}
+    </div>
 
-          return (
-            <div className={`defaultCell ${(cell.type != 'default') ?  cell.type + 'Cell' : ''}`} key={index}>
-               {/* {cell.color} */}
-            </div>
-          )
-        })}
-      </div>
-
-    );
+  );
 }
 
 TetrisTable.propTypes = {
-    height: PropTypes.number.isRequired,
-    width: PropTypes.number.isRequired
+  height: PropTypes.number.isRequired,
+  width: PropTypes.number.isRequired
 }
