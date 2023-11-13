@@ -1,38 +1,40 @@
-export const I_TETROMINO = [
+const I_TETROMINO = [
     ['I'],
     ['I'],
     ['I'],
     ['I'],
 ]
 
-export const L_TETROMINO = [
+const L_TETROMINO = [
     [0, 'L', 0],
     [0, 'L', 0],
     [0, 'L', 'L'],
 ]
 
-export const J_TETROMINO = [
+const J_TETROMINO = [
     [0, 'J', 0],
     [0, 'J', 0],
     ['J', 'J', 0],
 ]
 
-export const O_TETROMINO = [
+const O_TETROMINO = [
     ['O', 'O'],
     ['O', 'O']
 ]
 
-export const T_TETROMINO = [
+const T_TETROMINO = [
     ['T', 'T', 'T'],
     [0, 'T', 0],
 ]
 
-export const S_TETROMINO = [
+const S_TETROMINO = [
     [0, 'S', 'S'],
     ['S', 'S', 0],
 ]
 
-export const Z_TETROMINO = [
+const Z_TETROMINO = [
     ['Z', 'Z', 0],
-    [0 , 'Z', 'Z'],
+    [0, 'Z', 'Z'],
 ]
+
+module.exports = { I_TETROMINO, L_TETROMINO, J_TETROMINO, O_TETROMINO, T_TETROMINO, S_TETROMINO, Z_TETROMINO };

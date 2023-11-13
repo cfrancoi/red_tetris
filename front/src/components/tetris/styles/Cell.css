@@ -9,9 +9,28 @@
 }
 
 .ICell {
+    background-color: cyan;
+}
+
+.OCell {
+    background-color: yellow;
+}
+
+.SCell {
+    background-color: darkgreen;
+}
+
+.ZCell {
     background-color: red;
 }
 
+.TCell {
+    background-color: purple;
+}
+
+.JCell {
+    background-color: orange;
+}
 
 .LCell {
     background-color: blue;

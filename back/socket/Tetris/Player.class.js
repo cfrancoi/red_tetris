@@ -7,6 +7,7 @@ const L_TETROMINO = [
 module.exports = class TetrisPlayer {
 
     socket;
+    tetrominos = [];
 
     constructor(socket, options) {
         this.grid = []; // Represents the game board (e.g., a 2D array)
@@ -27,13 +28,19 @@ module.exports = class TetrisPlayer {
     }
 
     // Spawn a new Tetrimino
-    spawnNewPiece(grid, position) {
+    spawnNewPiece(generateSequence) {
+        if(!this.tetrominos.length)
+            generateSequence();
 
         this.currentPiece = {
-            grid: grid,
-            position: position
+            grid: this.tetrominos[0],
+            position: { x: 0, y: 0 }
         }
+        this.tetrominos = this.tetrominos.splice(1);
+        console.log("tertrominos=" , this.tetrominos);
+        console.log("currentPiece=" , this.currentPiece);
 
+      //  console.log("currentpiece =",this.currentPiece);
         return this.currentPiece;
     }
 
@@ -118,7 +125,9 @@ module.exports = class TetrisPlayer {
 
     // Handle collision detection
     handleCollision(gameGrid, currentPiece) {
+
         const pieceGrid = currentPiece.grid;
+        console.log("pieceGrid = ", pieceGrid);
         let hasColision = false;
 
         if (currentPiece.position) {

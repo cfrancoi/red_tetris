@@ -1,3 +1,4 @@
+const { get_tetrominos } = require('./generator_tetrominos.js');
 const L_TETROMINO = [
     [0, 'L', 0],
     [0, 'L', 0],
@@ -15,6 +16,7 @@ module.exports = class TetrisGame {
 
     id;
     players;
+    tetrominos = [];
     // io;
 
     constructor(id, players, io, options) {
@@ -43,15 +45,34 @@ module.exports = class TetrisGame {
         this.players.delete(playerId);
     }
 
+    update_sequence(){
+        let tetro = [];
+        get_tetrominos(tetro);
+        this.players.forEach((player,key) => {
+            player.tetrominos.push(...tetro);
+        })
+    }
+
     init() {
         console.log('init');
+        get_tetrominos(this.tetrominos);
+
+
 
     }
 
     start() {
         this.init();
         //INIT etc...
-
+        this.players.forEach((player,key) => {
+            console.log("player = ", player);
+            player.spawnNewPiece(()=> {this.update_sequence()})
+            this.io.to(this.id).emit('newPiece', {
+                playerId: key,
+                position: player.currentPiece.position,
+                tetromino: player.currentPiece.grid,
+            })
+        });
         this.Interval = setInterval(() => { this.gameLoop(this.io, this.players) }, 750);
     }
 
@@ -66,7 +87,7 @@ module.exports = class TetrisGame {
         });
     }
 
-    movePlayer(playerId, direction) {
+    movePlayer(playerId, direction, i) {
         const player = this.players.get(playerId)
         const piece = player?.move(direction);
 
@@ -76,11 +97,11 @@ module.exports = class TetrisGame {
             // this.io.to(this.id).emit(`move${strUcFirst(direction)}`, { id: playerId, fixed: move.isFixed });
 
             if (piece.isFixed) {
-                player.spawnNewPiece(L_TETROMINO, { x: 0, y: 0 })
+                player.spawnNewPiece(()=> {this.update_sequence()})
                 this.io.to(this.id).emit('newPiece', {
                     playerId: playerId,
-                    position: { x: 0, y: 0 },
-                    tetromino: L_TETROMINO,
+                    position: player.currentPiece.position,
+                    tetromino: player.currentPiece.grid,
                 })
             }
         }
@@ -95,11 +116,11 @@ module.exports = class TetrisGame {
             this.io.to(this.id).emit(`updatePiece`, { playerId: playerId, piece, fixed: piece.isFixed });
 
             if (piece.isFixed) {
-                player.spawnNewPiece(L_TETROMINO, { x: 0, y: 0 })
+                player.spawnNewPiece(()=> {this.update_sequence()})
                 this.io.to(this.id).emit('newPiece', {
                     playerId: playerId,
-                    position: { x: 0, y: 0 },
-                    tetromino: L_TETROMINO,
+                    position: player.currentPiece.position,
+                    tetromino: player.currentPiece.grid,
                 })
             }
         }

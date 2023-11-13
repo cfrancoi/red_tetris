@@ -1,5 +1,5 @@
 import { createSlice, current } from '@reduxjs/toolkit';
-import { I_TETROMINO, L_TETROMINO } from '../components/tetris/tetrominos-constant.js';
+//import { I_TETROMINO, L_TETROMINO } from '../../../back/socket/Tetris/tetrominos-constant.js';
 
 const defaultHeight = 20;
 const defaultWidth = 10;
@@ -92,7 +92,7 @@ const tetrisSlice = createSlice({
         score: 0,
         currentPiece: {
           position: { x: 0, y: 0 },
-          grid: L_TETROMINO,
+          grid: null,
         },
         grid: Array.from(Array(defaultHeight), () => new Array(defaultWidth).fill({}))
       },
@@ -218,7 +218,7 @@ const tetrisSlice = createSlice({
         p.score = 0;
         p.currentPiece = {
           position: { x: 0, y: 0 },
-          grid: L_TETROMINO,
+          grid: null,
         }
       })
 
