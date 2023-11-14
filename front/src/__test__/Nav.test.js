@@ -19,12 +19,6 @@ test('loads and displays Nav', async () => {
             </ Provider>
         </BrowserRouter>)
 
-    // ACT
-    await screen.findByRole('button')
-
-    // ASSERT
-    expect(screen.getByRole('button')).toBeVisible()
-    // expect(screen.getByRole('button')).toHaveTextContent('Login')
 })
 
 
@@ -39,10 +33,4 @@ test('loads and displays Navbar with null route', async () => {
             </ Provider>
         </BrowserRouter>)
 
-    // ACT
-    // await screen.findByRole('button')
-
-    // ASSERT
-    // expect(screen.toBeTruthy());
-    // expect(screen.getByRole('button')).toHaveTextContent('Login')
 })

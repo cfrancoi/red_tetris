@@ -1,18 +1,14 @@
 import { useForm } from 'react-hook-form'
-import { useDispatch } from 'react-redux'
-import { register as signup } from '../../actions/auth';
+import { useCallback } from 'react';
+import PropTypes from 'prop-types';
 
-//TODO transform to Login modal using mateiral UI
-//TODO move to component
-const Register = () => {
+
+const Register = ({ onSignUp }) => {
     const { register, handleSubmit } = useForm()
 
-    const dispatch = useDispatch();
-
-    const submitForm = (data) => {
-
-        dispatch(signup(data.login, data.email, data.password))
-    }
+    const submitForm = useCallback((data) => {
+        onSignUp(data.login, data.email, data.password);
+    }, [onSignUp]);
 
     return (
         <form onSubmit={handleSubmit(submitForm)}>
@@ -50,4 +46,9 @@ const Register = () => {
         </form>
     )
 }
+
+Register.propTypes = {
+    onSignUp: PropTypes.func.isRequired,
+}
+
 export default Register
