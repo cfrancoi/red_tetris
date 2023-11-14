@@ -1,12 +1,13 @@
 import { useDispatch } from 'react-redux'
 import { logout } from '../../actions/auth';
+import { useCallback } from 'react';
 
 const Logout = () => {
     const dispatch = useDispatch();
 
-    const onClick = () => {
+    const onClick = useCallback(() => {
         dispatch(logout())
-    }
+    }, [dispatch])
 
     return (
         <>
