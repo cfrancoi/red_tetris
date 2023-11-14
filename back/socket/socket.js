@@ -15,13 +15,14 @@ module.exports = function (server) {
     require('./room.gateway')(socket, roomManager, io);
 
     socket.on("disconnecting", () => {
+      if (socket.data.tetrisRoomId) {
+        const room = roomManager.removePlayerFromRoom(socket.data.tetrisRoomId, socket);
 
-
-      console.log(socket.rooms); // the Set contains at least the socket ID
-      socket.rooms.forEach(room => {
-        socket.leave(room);
-        console.log('leave room:' + room);
-      })
+        if (room) {
+          socket.data.tetrisRoomId = undefined;
+          socket.to(room.id).emit('roomLeft', { roomId: socket.data.tetrisRoomId, playerId: socket.id });
+        }
+      }
     });
 
     socket.on('disconnect', () => {
