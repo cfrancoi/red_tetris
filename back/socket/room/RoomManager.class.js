@@ -1,3 +1,4 @@
+const { Socket } = require('socket.io');
 const Room = require('./Room.class')
 
 module.exports = class RoomManager {
@@ -21,6 +22,11 @@ module.exports = class RoomManager {
         return newRoom;
     }
 
+    /**
+     * @param {number} id 
+     * @param {Socket} player 
+     * @returns {Room | undefined | null} 
+     */
     removePlayerFromRoom(id, player) {
         const room = this.rooms.find(room => room.id === id);
 
@@ -31,6 +37,9 @@ module.exports = class RoomManager {
         }
     }
 
+    /**
+     * Empty room are clear and if a game is in progress it's stoped
+     */
     clearEmptyRoom() {
         this.rooms = this.rooms.filter(room => {
             if (room.isEmpty()) {
