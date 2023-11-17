@@ -244,6 +244,18 @@ const tetrisSlice = createSlice({
       };
 
       return state;
+    },
+    breakLine: (state, action) => {
+
+      const lines = action.lines;
+      const playerId = action.playerId;
+
+      let player = getPlayer(state.players, playerId);
+
+      lines.forEach(line => {
+        player.grid[line].fill({})
+      })
+
     }
   }
 })
