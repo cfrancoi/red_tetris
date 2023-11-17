@@ -27,9 +27,56 @@ module.exports = class TetrisPlayer {
 
     }
 
+    clearRows(index) {
+        this.grid[index].fill({ type: '', fixed: false });
+    }
+
+    downGrid(index) {
+        // Vérifier si l'index de la ligne est valide
+        if (index < 0 || index >= this.grid.length) {
+            console.error('Index de ligne invalide.');
+            return;
+        }
+
+        // Descendre chaque élément au-dessus de la ligne spécifiée
+
+        for (let i = index - 1; i >= 0; i--) {
+            this.grid[i + 1] = this.grid[i];
+        }
+
+        this.grid[0] = Array(this.grid[0].length).fill({ type: '', fixed: false });
+    }
+
+
+
+    checkTetris(onBreakLines) {
+        let breakLines = [];
+        for (let i = 0; i < this.grid.length; i++) {
+            let cpt = 0;
+            for (let j = 0; j < this.grid[i].length; j++) {
+                if (this.grid[i][j].fixed) {
+                    cpt++;
+                    console.log("cpt = ", cpt);
+                }
+                if (cpt === this.grid[i].length) {
+                    breakLines.push(i);
+                    this.clearRows(i);
+                }
+            }
+        }
+        for (let i = 0; i < breakLines.length; i++)
+            this.downGrid(breakLines[i]);
+
+        if (breakLines.length) {
+            onBreakLines(breakLines);
+            breakLines.push(this.checkTetris(onBreakLines));
+        }
+        return breakLines;
+    }
+
     // Spawn a new Tetrimino
     spawnNewPiece(generateSequence) {
-        if(!this.tetrominos.length)
+        if (!this.tetrominos.length)
             generateSequence();
 
         this.currentPiece = {
@@ -37,10 +84,10 @@ module.exports = class TetrisPlayer {
             position: { x: 0, y: 0 }
         }
         this.tetrominos = this.tetrominos.splice(1);
-        console.log("tertrominos=" , this.tetrominos);
-        console.log("currentPiece=" , this.currentPiece);
+        console.log("tertrominos=", this.tetrominos);
+        console.log("currentPiece=", this.currentPiece);
 
-      //  console.log("currentpiece =",this.currentPiece);
+        //  console.log("currentpiece =",this.currentPiece);
         return this.currentPiece;
     }
 

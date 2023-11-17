@@ -244,9 +244,54 @@ const tetrisSlice = createSlice({
       };
 
       return state;
+    },
+    breakLine: (state, action) => {
+      console.log("action = ", action);
+      const lines = action.payload.listBreakline;
+      const playerId = action.payload.playerId;
+
+      let player = getPlayer(state.players, playerId);
+
+      lines.forEach(line => {
+        console.log("line = ", line);
+        player.grid[line].fill({})
+      })
+
+    },
+    downGrid: (state, action) => {
+
+      const playerId = action.payload.playerId;
+
+      let player = getPlayer(state.players, playerId);
+
+      const lines = action.payload.listBreakline;
+
+      lines.forEach(line => {
+        console.log("line = ", line);
+        downOneLine(line, player.grid);
+      })
+
+
     }
+
   }
 })
 
 
 export default tetrisSlice;
+
+function downOneLine(index, grid) {
+  // Vérifier si l'index de la ligne est valide
+  if (index < 0 || index >= grid.length) {
+    console.error('Index de ligne invalide.');
+    return;
+  }
+
+  // Descendre chaque élément au-dessus de la ligne spécifiée
+
+  for (let i = index - 1; i >= 0; i--) {
+    grid[i + 1] = grid[i];
+  }
+
+  grid[0] = Array(grid[0].length).fill({ type: '', fixed: false });
+}

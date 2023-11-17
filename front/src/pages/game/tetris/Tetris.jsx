@@ -44,13 +44,22 @@ export default function Tetris() {
                 }
             })
         }
-
+        socket.on('breakLine', (payload) => {
+            console.log("payload = ", payload);
+            dispatch({
+                type: 'tetris/breakLine', payload
+            })
+            dispatch({
+                type: 'tetris/downGrid', payload
+            })
+        })
         return () => {
             socket?.off('moveDown');
             socket?.off('moveRight');
             socket?.off('moveLeft');
             socket?.off('updatePiece');
             socket?.off('newPiece');
+            socket?.off('breakLine');
         }
 
     }, [dispatch, socket, tetris]);

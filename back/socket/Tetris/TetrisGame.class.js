@@ -97,6 +97,7 @@ module.exports = class TetrisGame {
             // this.io.to(this.id).emit(`move${strUcFirst(direction)}`, { id: playerId, fixed: move.isFixed });
 
             if (piece.isFixed) {
+                player.checkTetris((listBreakline)=> this.io.to(this.id).emit('breakLine',{playerId:playerId,listBreakline}));
                 player.spawnNewPiece(()=> {this.update_sequence()})
                 this.io.to(this.id).emit('newPiece', {
                     playerId: playerId,
@@ -116,6 +117,7 @@ module.exports = class TetrisGame {
             this.io.to(this.id).emit(`updatePiece`, { playerId: playerId, piece, fixed: piece.isFixed });
 
             if (piece.isFixed) {
+                player.checkTetris((listBreakline)=> this.io.to(this.id).emit('breakLine',{playerId:playerId,listBreakline}));
                 player.spawnNewPiece(()=> {this.update_sequence()})
                 this.io.to(this.id).emit('newPiece', {
                     playerId: playerId,
