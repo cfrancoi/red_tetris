@@ -29,29 +29,28 @@ module.exports = class TetrisPlayer {
 
     clearRows(index) {
         this.grid[index].fill({ type: '', fixed: false });
-        this.downGrid(index);
     }
 
     downGrid(index) {
         // Vérifier si l'index de la ligne est valide
-         if (index < 0 || index >= this.grid.length) {
-           console.error('Index de ligne invalide.');
-           return;
-         }
-       
-         // Descendre chaque élément au-dessus de la ligne spécifiée
-        
-         for (let i = index - 1; i >= 0; i--) {
-           this.grid[i + 1] = this.grid[i];
-         }
-       
-         this.grid[0] = [].fill({ type: '', fixed: false });
-       }
+        if (index < 0 || index >= this.grid.length) {
+            console.error('Index de ligne invalide.');
+            return;
+        }
 
- 
+        // Descendre chaque élément au-dessus de la ligne spécifiée
+
+        for (let i = index - 1; i >= 0; i--) {
+            this.grid[i + 1] = this.grid[i];
+        }
+
+        this.grid[0] = Array(this.grid[0].length).fill({ type: '', fixed: false });
+    }
+
+
 
     checkTetris(onBreakLines) {
-        let breakLines= [];
+        let breakLines = [];
         for (let i = 0; i < this.grid.length; i++) {
             let cpt = 0;
             for (let j = 0; j < this.grid[i].length; j++) {
@@ -65,10 +64,10 @@ module.exports = class TetrisPlayer {
                 }
             }
         }
-        for (let i = 0;i < breakLines.length ; i++)
+        for (let i = 0; i < breakLines.length; i++)
             this.downGrid(breakLines[i]);
-        
-        if(breakLines.length){
+
+        if (breakLines.length) {
             onBreakLines(breakLines);
             breakLines.push(this.checkTetris(onBreakLines));
         }

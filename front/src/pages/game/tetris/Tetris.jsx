@@ -45,8 +45,12 @@ export default function Tetris() {
             })
         }
         socket.on('breakLine', (payload) => {
+            console.log("payload = ", payload);
             dispatch({
                 type: 'tetris/breakLine', payload
+            })
+            dispatch({
+                type: 'tetris/downGrid', payload
             })
         })
         return () => {
