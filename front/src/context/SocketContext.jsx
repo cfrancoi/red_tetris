@@ -21,11 +21,11 @@ export default function WebSocketProvider() {
 
 
     useEffect(() => {
-        const newSocket = io({ autoConnect: true, path: '/api/socket.io', token: "abcd" });
+        const newSocket = io({ transports: ['websocket'], autoConnect: true, path: '/api/socket.io', token: "abcd" });
 
         setSocket(newSocket);
 
-        return function cleanup() {
+        return () => {
             newSocket.disconnect();
             newSocket.off();
         }
@@ -50,7 +50,6 @@ export default function WebSocketProvider() {
                 socket.off('connect');
         }
     }, [socket, setIsConnected]);
-
 
     return (
         <WebSocketContext.Provider value={{ socket, isConnected }}>
