@@ -17,12 +17,14 @@ export default function StartRoomComponent() {
     }, [dispatch])
 
     useEffect(() => {
-        socket.on('roomStarted', () => {
-            startGame();
-        })
+        if (socket) {
+            socket.on('roomStarted', () => {
+                startGame();
+            })
+        }
 
         return () => {
-            socket.off('roomStarted');
+            socket?.off('roomStarted');
         }
     }, [socket, startGame])
 
