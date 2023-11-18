@@ -1,8 +1,9 @@
 import PropTypes from 'prop-types';
 import './styles/Cell.css'
 import { useCallback, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useSocket } from '../../context/SocketContext'
+import Line from './Line';
 
 const EMOVE = {
   DOWN: 'moveDown',
@@ -11,16 +12,10 @@ const EMOVE = {
   ROTATE: 'rotatePiece'
 }
 
-export default function TetrisTable({ height, width, playerId, isControlled }) {
+export default function TetrisTable({ playerId, isControlled }) {
   const [show, setShow] = useState(false);
-
-
-  //TODO clean me
   const tetris = useSelector(state => (state.tetris.players.find(p => p.id === playerId)));
   const roomId = useSelector(state => (state.tetris.roomId));
-
-  const dispatch = useDispatch();
-
   const { socket } = useSocket();
 
   const move = useCallback((moveDirection) => {
@@ -46,6 +41,7 @@ export default function TetrisTable({ height, width, playerId, isControlled }) {
     }
     return () => {
       if (isControlled) {
+        console.log('remove event');
         window.removeEventListener('keypress', onKeyPressEvent);
       }
     }
@@ -64,7 +60,7 @@ export default function TetrisTable({ height, width, playerId, isControlled }) {
       {tetris?.grid.map((line, index) => {
         return (
           <div key={index}>
-            <Cell cells={line}></Cell>
+            <Line line={line}></Line>
           </div>
         );
       })}
@@ -74,23 +70,7 @@ export default function TetrisTable({ height, width, playerId, isControlled }) {
   );
 }
 
-
-function Cell({ cells }) {
-  return (
-    <div className='line'>
-      {cells.map((cell, index) => {
-        return (
-          <div className={`defaultCell ${(cell.type != 'default') ? cell.type + 'Cell' : ''}`} key={index}>
-            {/* {cell.color} */}
-          </div>
-        )
-      })}
-    </div>
-
-  );
-}
-
 TetrisTable.propTypes = {
-  height: PropTypes.number.isRequired,
-  width: PropTypes.number.isRequired
+  playerId: PropTypes.string.isRequired,
+  isControlled: PropTypes.bool.isRequired
 }
