@@ -1,5 +1,5 @@
 import { useDispatch } from 'react-redux'
-import { login, register as signup } from '../../actions/auth';
+import { login as signin, register as signup } from '../../actions/auth';
 import { routes } from '../../routes/route.constant';
 import Navbar from '../../components/layout/Navbar';
 import { useCallback } from 'react';
@@ -11,7 +11,7 @@ const LoginScreen = () => {
 
     const submitForm = useCallback((username, password) => {
         console.log(`${username} ${password}`);
-        dispatch(login(login, password));
+        dispatch(signin(username, password));
     }, [dispatch]);
 
     const onSignUp = useCallback((username, email, password) => {

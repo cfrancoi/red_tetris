@@ -1,21 +1,31 @@
 //TODO name replace with translate
-export const routes = [
+
+const offlineRoutes = [
     {
-        href: "/game",
-        name: "game",
+        href: "/scoreboard",
+        name: "scoreboard",
+        isLoggedIn: false,
+        roles: []
+    },
+]
+
+const onlineRoutes = [
+    {
+        href: "/profile",
+        name: "profile",
         isLoggedIn: true,
         roles: []
     },
     {
-        href: "/home",
-        name: "home",
-        isLoggedIn: false,
-        roles: []
-    },
-    {
-        href: "/game/tetris",
-        name: "tetris",
-        isLoggedIn: false,
+        href: "/scoreboard",
+        name: "scoreboard",
+        isLoggedIn: true,
         roles: []
     }
+]
+
+
+export const routes = [
+    ...onlineRoutes,
+    ...offlineRoutes,
 ]

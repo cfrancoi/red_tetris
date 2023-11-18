@@ -14,54 +14,47 @@ exports.signup = (req, res) => {
   });
 
   user.save()
-  .then((user) => {
-    if (req.body.roles) {
-      Role.find(
-        {
-          name: { $in: req.body.roles }
-        },
-        (err, roles) => {
-          if (err) {
-            res.status(500).send({ message: err });
-            return;
-          }
+    .then((user) => {
+      if (req.body.roles) {
+        Role.find({ name: { $in: req.body.roles } })
+          .then((role) => {
 
-          user.roles = roles.map(role => role._id);
-          user.save()
-          .then(_ => {
-            res.send({ message: "User was registered successfully!" });
+            user.roles = roles.map(role => role._id);
+            user.save()
+              .then(_ => {
+                res.send({ message: "User was registered successfully!" });
+              })
+              .catch(err => {
+                res.status(500).send({ message: err });
+              })
           })
-          .catch(err => {
-              res.status(500).send({ message: err });
+          .catch((err) => {
+            res.status(500).send({ message: '3' + err });
+          });
+      } else {
+        Role.findOne({ name: "user" })
+          .then((role) => {
+
+            user.roles = [role._id];
+            user.save()
+              .then((user) => {
+                res.send({ message: "User was registered successfully!" });
+              })
+              .catch(err => {
+                res.status(500).send({ message: '4' + err });
+              })
+
           })
-          
-        }
-      );
-    } else {
-      Role.findOne({ name: "user" }, (err, role) => {
-        if (err) {
-          res.status(500).send({ message: err });
-          return;
-        }
-
-        user.roles = [role._id];
-        user.save(err => {
-          if (err) {
-            res.status(500).send({ message: err });
-            return;
-          }
-
-          res.send({ message: "User was registered successfully!" });
-        });
-      });
-    }
-  })
-  .catch(err => {
-    if (err) {
-      res.status(500).send({ message: err });
-      return;
-    }
-  })
+          .catch((err) => {
+            res.status(500).send({ message: '3' + err });
+          });
+      }
+    })
+    .catch(err => {
+      if (err) {
+        res.status(500).send({ message: '1' + err });
+      }
+    })
 };
 
 exports.signin = (req, res) => {
@@ -88,12 +81,12 @@ exports.signin = (req, res) => {
       }
 
       const token = jwt.sign({ id: user.id },
-                              config.secret,
-                              {
-                                algorithm: 'HS256',
-                                allowInsecureKeySizes: true,
-                                expiresIn: 86400, // 24 hours
-                              });
+        config.secret,
+        {
+          algorithm: 'HS256',
+          allowInsecureKeySizes: true,
+          expiresIn: 86400, // 24 hours
+        });
 
       var authorities = [];
 
@@ -109,6 +102,6 @@ exports.signin = (req, res) => {
       });
     })
     .catch(err => {
-      res.status(500).send({ message: err });
+      res.status(500).send({ message: '1' + err });
     })
 };
