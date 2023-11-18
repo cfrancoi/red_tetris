@@ -1,5 +1,4 @@
 import { createSlice, current } from '@reduxjs/toolkit';
-//import { I_TETROMINO, L_TETROMINO } from '../../../back/socket/Tetris/tetrominos-constant.js';
 
 const defaultHeight = 20;
 const defaultWidth = 10;
@@ -223,8 +222,6 @@ const tetrisSlice = createSlice({
       })
 
       const result = state.players.concat(toAdd);
-      console.log(result);
-      console.log(toAdd);
 
       state.players = result;
     },
