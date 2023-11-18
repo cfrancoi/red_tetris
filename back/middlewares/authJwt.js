@@ -4,7 +4,7 @@ const db = require("../models");
 const User = db.user;
 const Role = db.role;
 
-verifyToken = (req, res, next) => {
+const verifyToken = (req, res, next) => {
   let token = req.headers["x-access-token"];
 
   if (!token) {
@@ -12,19 +12,19 @@ verifyToken = (req, res, next) => {
   }
 
   jwt.verify(token,
-            config.secret,
-            (err, decoded) => {
-              if (err) {
-                return res.status(401).send({
-                  message: "Unauthorized!",
-                });
-              }
-              req.userId = decoded.id;
-              next();
-            });
+    config.secret,
+    (err, decoded) => {
+      if (err) {
+        return res.status(401).send({
+          message: "Unauthorized!",
+        });
+      }
+      req.userId = decoded.id;
+      next();
+    });
 };
 
-isAdmin = (req, res, next) => {
+const isAdmin = (req, res, next) => {
   User.findById(req.userId).exec((err, user) => {
     if (err) {
       res.status(500).send({ message: err });
@@ -41,8 +41,8 @@ isAdmin = (req, res, next) => {
           return;
         }
 
-        for (let i = 0; i < roles.length; i++) {
-          if (roles[i].name === "admin") {
+        for (const element of roles) {
+          if (element.name === "admin") {
             next();
             return;
           }
@@ -55,7 +55,7 @@ isAdmin = (req, res, next) => {
   });
 };
 
-isModerator = (req, res, next) => {
+const isModerator = (req, res, next) => {
   User.findById(req.userId).exec((err, user) => {
     if (err) {
       res.status(500).send({ message: err });
@@ -72,8 +72,8 @@ isModerator = (req, res, next) => {
           return;
         }
 
-        for (let i = 0; i < roles.length; i++) {
-          if (roles[i].name === "moderator") {
+        for (const element of roles) {
+          if (element.name === "moderator") {
             next();
             return;
           }
