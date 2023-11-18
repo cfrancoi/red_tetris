@@ -23,8 +23,10 @@ module.exports = function (socket, roomManager, io) {
     console.log(arg);
     const room = roomManager.startRoom(arg, socket, io);
 
+
+    console.log(socket.data.auth);
     //TODO payload
-    console.log(room);
+    console.log(`game ${room.id} started by ${(socket.data.auth) ? socket.data.auth.username : socket.id + '(guest)'}`);
 
     if (room) {
       socket.emit('roomStarted');

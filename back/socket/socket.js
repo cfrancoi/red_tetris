@@ -1,6 +1,9 @@
 const { Server } = require("socket.io");
 const http = require('http');
 const RoomManager = require('./room/RoomManager.class');
+const jwt = require("jsonwebtoken");
+const config = require("../config/auth.config.js");
+
 
 module.exports = function (server) {
 
@@ -13,6 +16,30 @@ module.exports = function (server) {
 
     require('./user.gateway')(socket);
     require('./room.gateway')(socket, roomManager, io);
+
+
+    socket.on('authentication', (accessToken) => {
+      console.log(`accessToken: ${accessToken}`);
+
+      if (!accessToken) {
+        socket.data.auth = null;
+        //TODO remove authentication (maybe use an other event ?)
+      }
+      else {
+        //TODO test token
+        console.log(`accessToken: ${accessToken}`);
+        jwt.verify(accessToken,
+          config.secret,
+          (err, decoded) => {
+            if (err) {
+              return;
+            }
+            socket.data.auth = decoded;
+            socket.emit('authenticated');
+          });
+      }
+
+    })
 
     socket.on("disconnecting", () => {
       if (socket.data.tetrisRoomId) {
