@@ -1,8 +1,10 @@
+const { Socket } = require("socket.io");
 const RoomManager = require("./room/RoomManager.class");
 
 
 /**
  * @param {RoomManager} roomManager
+ * @param {Socket} socket
  */
 module.exports = function (socket, roomManager, io) {
   socket.on('requestRoom', (arg) => {
@@ -31,8 +33,11 @@ module.exports = function (socket, roomManager, io) {
   });
 
   socket.on('leaveRoom', (roomId) => {
-    socket.leave(roomId)
-
+    socket.leave(roomId);
+    socket.removeAllListeners('moveDown');
+    socket.removeAllListeners('moveLeft');
+    socket.removeAllListeners('moveRight');
+    socket.removeAllListeners('rotatePiece');
     const room = roomManager.removePlayerFromRoom(roomId, socket);
 
     if (room) {
@@ -44,5 +49,4 @@ module.exports = function (socket, roomManager, io) {
   socket.on('updateRoom', (arg) => {
 
   });
-
 }
