@@ -35,5 +35,13 @@ module.exports = function (socket, roomManager, io) {
         }
     });
 
+    socket.on('drop', (gameId) => {
+        const game = roomManager.getGameById(gameId);
+
+        if (game) {
+            game.movePlayer(socket.id, 'drop');
+        }
+    });
+
 
 };

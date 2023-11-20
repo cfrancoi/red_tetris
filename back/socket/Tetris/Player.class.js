@@ -91,7 +91,7 @@ module.exports = class TetrisPlayer {
         return this.currentPiece;
     }
 
-    canDrop() {
+    canDown() {
         return !this.handleCollision(this.grid, { grid: this.currentPiece.grid, position: { x: this.currentPiece.position.x, y: this.currentPiece.position.y + 1 } });
     }
 
@@ -113,16 +113,27 @@ module.exports = class TetrisPlayer {
         if (!this.currentPiece)
             return;
 
+        if (direction === 'drop') {
+            // Implement logic to drop the Tetrimino down
+            let ret = this.move('down');
+
+            while (!ret?.isFixed) {
+                ret = this.move('down');
+            }
+
+            return ret;
+        }
+
         if (direction === 'down') {
 
-            if (this.canDrop()) {
+            if (this.canDown()) {
                 this.currentPiece.position = { ...this.currentPiece.position, y: this.currentPiece.position.y + 1 }
                 const isFixed = false;
                 this.updateGameGrid(this.grid, this.currentPiece, this.currentPiece.grid, isFixed);
                 return { ...this.currentPiece, isFixed: isFixed };
             }
             else {
-                const isFixed = !this.canDrop();
+                const isFixed = !this.canDown();
                 this.updateGameGrid(this.grid, this.currentPiece, this.currentPiece.grid, isFixed);
                 return { ...this.currentPiece, isFixed: isFixed };
             }
@@ -155,7 +166,7 @@ module.exports = class TetrisPlayer {
 
             if (this.canBePlace(newGrid)) {
                 this.currentPiece.grid = newGrid;
-                const isFixed = !this.canDrop();
+                const isFixed = !this.canDown();
                 this.updateGameGrid(this.grid, this.currentPiece, this.currentPiece.grid, isFixed);
 
                 return { ...this.currentPiece, isFixed: isFixed };
@@ -167,7 +178,7 @@ module.exports = class TetrisPlayer {
 
     // Drop the current Tetrimino down
     drop() {
-        // Implement logic to drop the Tetrimino down
+        return this.move('drop');
     }
 
     // Handle collision detection
