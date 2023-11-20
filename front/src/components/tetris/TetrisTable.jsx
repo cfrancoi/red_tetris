@@ -9,7 +9,8 @@ const EMOVE = {
   DOWN: 'moveDown',
   RIGHT: 'moveRight',
   LEFT: 'moveLeft',
-  ROTATE: 'rotatePiece'
+  ROTATE: 'rotatePiece',
+  DROP: 'drop'
 }
 
 export default function TetrisTable({ playerId, isControlled }) {
@@ -57,6 +58,7 @@ export default function TetrisTable({ playerId, isControlled }) {
       <button onClick={() => { move(EMOVE.LEFT) }}>left</button>
       <button onClick={() => { move(EMOVE.RIGHT) }}>right</button>
       <button onClick={() => { move(EMOVE.ROTATE) }}>rotate</button>
+      <button onClick={() => { move(EMOVE.DROP) }}>drop</button>
       {tetris?.grid.map((line, index) => {
         return (
           <div key={index}>
