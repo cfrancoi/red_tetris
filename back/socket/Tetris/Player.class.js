@@ -157,6 +157,10 @@ module.exports = class TetrisPlayer {
                 return { ...this.currentPiece, isFixed: isFixed };
             }
         }
+
+        if (direction === 'rotate') {
+            return (this.rotate());
+        }
     }
 
     // Rotate the current Tetrimino

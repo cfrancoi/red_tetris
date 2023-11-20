@@ -45,10 +45,10 @@ module.exports = class TetrisGame {
         this.players.delete(playerId);
     }
 
-    update_sequence(){
+    update_sequence() {
         let tetro = [];
         get_tetrominos(tetro);
-        this.players.forEach((player,key) => {
+        this.players.forEach((player, key) => {
             player.tetrominos.push(...tetro);
         })
     }
@@ -64,9 +64,9 @@ module.exports = class TetrisGame {
     start() {
         this.init();
         //INIT etc...
-        this.players.forEach((player,key) => {
+        this.players.forEach((player, key) => {
             console.log("player = ", player);
-            player.spawnNewPiece(()=> {this.update_sequence()})
+            player.spawnNewPiece(() => { this.update_sequence() })
             this.io.to(this.id).emit('newPiece', {
                 playerId: key,
                 position: player.currentPiece.position,
@@ -97,8 +97,8 @@ module.exports = class TetrisGame {
             // this.io.to(this.id).emit(`move${strUcFirst(direction)}`, { id: playerId, fixed: move.isFixed });
 
             if (piece.isFixed) {
-                player.checkTetris((listBreakline)=> this.io.to(this.id).emit('breakLine',{playerId:playerId,listBreakline}));
-                player.spawnNewPiece(()=> {this.update_sequence()})
+                player.checkTetris((listBreakline) => this.io.to(this.id).emit('breakLine', { playerId: playerId, listBreakline }));
+                player.spawnNewPiece(() => { this.update_sequence() })
                 this.io.to(this.id).emit('newPiece', {
                     playerId: playerId,
                     position: player.currentPiece.position,
@@ -109,22 +109,4 @@ module.exports = class TetrisGame {
 
     }
 
-    rotatePlayer(playerId) {
-        const player = this.players.get(playerId)
-        const piece = player?.rotate();
-
-        if (piece) {
-            this.io.to(this.id).emit(`updatePiece`, { playerId: playerId, piece, fixed: piece.isFixed });
-
-            if (piece.isFixed) {
-                player.checkTetris((listBreakline)=> this.io.to(this.id).emit('breakLine',{playerId:playerId,listBreakline}));
-                player.spawnNewPiece(()=> {this.update_sequence()})
-                this.io.to(this.id).emit('newPiece', {
-                    playerId: playerId,
-                    position: player.currentPiece.position,
-                    tetromino: player.currentPiece.grid,
-                })
-            }
-        }
-    }
 }
