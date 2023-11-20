@@ -31,7 +31,7 @@ module.exports = function (socket, roomManager, io) {
         const game = roomManager.getGameById(gameId);
 
         if (game) {
-            game.rotatePlayer(socket.id);
+            game.movePlayer(socket.id, 'rotate');
         }
     });
 
