@@ -3,23 +3,29 @@ const Room = require('./Room.class')
 
 module.exports = class RoomManager {
 
-    constructor() {
-        this.rooms = [];
-    }
+    /** @type {[Room]} */
+    rooms = [];
+
+    // constructor() { }
 
     // Method to add a player to a room or create a new room
     addPlayerToRoom(id, player) {
+        let joinedRoom = null;
         for (const room of this.rooms) {
             if (room.id === id) {
                 room.addPlayer(player);
-                return room;
+                joinedRoom = room;
             }
         }
 
         // If no suitable room is found, create a new one
-        const newRoom = new Room(id, player);
-        this.rooms.push(newRoom);
-        return newRoom;
+        if (!joinedRoom) {
+            joinedRoom = new Room(id, player);
+            this.rooms.push(joinedRoom);
+        }
+
+        this.events?.onJoin(id, player, joinedRoom);
+        return joinedRoom;
     }
 
     /**
@@ -33,6 +39,8 @@ module.exports = class RoomManager {
         if (room) {
             room.removePlayer(player);
             this.clearEmptyRoom();
+            const nextRoom = this.rooms.find(room => room.id === id);
+            this.events?.onLeave(id, player, nextRoom);
             return this.rooms.find(room => room.id === id);
         }
     }
@@ -54,19 +62,22 @@ module.exports = class RoomManager {
         });
     }
 
-
-    startRoom(roomId, playerId, io) {
+    /**
+     * 
+     * @param {number} roomId 
+     * @param {*} player 
+     * @param {*} io 
+     * @returns {Room}
+     */
+    startRoom(roomId, player, io) {
         const idx = this.rooms.findIndex(room => room.id === roomId);
 
         if (idx !== -1) {
             const room = this.rooms[idx];
             console.log(room);
 
-            if (room.start(playerId, io)) {
-
-                room.players.forEach(player => {
-                    require('../tetris.gateway')(player, this, io);
-                });
+            if (room.start(player, io)) {
+                this.events?.onStart(room.id, player, room);
                 return room;
             };
         }
