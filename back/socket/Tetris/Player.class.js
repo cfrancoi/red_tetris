@@ -46,6 +46,11 @@ module.exports = class TetrisPlayer {
 
         this.grid[0] = Array(this.grid[0].length).fill({ type: '', isFixed: false });
     }
+    
+    freezeline(index)
+    {
+        this.grid[index].fill({type:'f',isFixed:true});
+    }
 
 
     checkBreakLine(onBreakLines) {
@@ -74,6 +79,9 @@ module.exports = class TetrisPlayer {
                 return onLose();
         }
     }
+
+
+
 
     /**
      * 

@@ -43,6 +43,9 @@
 .line {
     display: flex;
 }
+.line.freeze{
+    background-color: transparent;
+}
 
 .show {
     border: solid;
