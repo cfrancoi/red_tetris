@@ -36,6 +36,7 @@ module.exports = function (socket, roomManager, io) {
     socket.removeAllListeners('moveLeft');
     socket.removeAllListeners('moveRight');
     socket.removeAllListeners('rotatePiece');
+    socket.removeAllListeners('drop');
     const room = roomManager.removePlayerFromRoom(roomId, socket);
 
     if (room) {
