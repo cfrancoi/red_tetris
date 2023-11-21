@@ -36,6 +36,9 @@
     background-color: blue;
 }
 
+.preview {
+    border-color: gold;
+}
 
 .line {
     display: flex;
