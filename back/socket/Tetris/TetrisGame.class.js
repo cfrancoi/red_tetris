@@ -17,9 +17,18 @@ module.exports = class TetrisGame {
     id;
     players;
     tetrominos = [];
+    onFinish
     // io;
 
-    constructor(id, players, io, options) {
+    /**
+     * 
+     * @param {*} id 
+     * @param {Map<string, player>} players list of players
+     * @param {*} io 
+     * @param {{height: number;}} options sets of options
+     * @param {()} onFinish call when game is over
+     */
+    constructor(id, players, io, options, onFinish) {
         this.id = id;
         this.io = io;
         this.players = new Map(); // Map to store player instances
@@ -66,12 +75,23 @@ module.exports = class TetrisGame {
         //INIT etc...
         this.players.forEach((player, key) => {
             console.log("player = ", player);
-            player.spawnNewPiece(() => { this.update_sequence() })
-            this.io.to(this.id).emit('newPiece', {
-                playerId: key,
-                position: player.currentPiece.position,
-                tetromino: player.currentPiece.grid,
-            })
+            player.spawnNewPiece(() => { this.update_sequence() },
+                () => {
+                    this.io.to(this.id).emit('newPiece', {
+                        playerId: key,
+                        position: player.currentPiece.position,
+                        tetromino: player.currentPiece.grid,
+                    })
+                },
+                () => {
+                    console.log('loose'),
+                        this.kill();
+                })
+            // this.io.to(this.id).emit('newPiece', {
+            //     playerId: key,
+            //     position: player.currentPiece.position,
+            //     tetromino: player.currentPiece.grid,
+            // })
         });
         this.Interval = setInterval(() => { this.gameLoop(this.io, this.players) }, 750);
     }
@@ -97,13 +117,21 @@ module.exports = class TetrisGame {
             // this.io.to(this.id).emit(`move${strUcFirst(direction)}`, { id: playerId, fixed: move.isFixed });
 
             if (piece.isFixed) {
-                player.checkTetris((listBreakline) => this.io.to(this.id).emit('breakLine', { playerId: playerId, listBreakline }));
-                player.spawnNewPiece(() => { this.update_sequence() })
-                this.io.to(this.id).emit('newPiece', {
-                    playerId: playerId,
-                    position: player.currentPiece.position,
-                    tetromino: player.currentPiece.grid,
-                })
+                player.checkTetris((listBreakline) => this.io.to(this.id).emit('breakLine', { playerId: playerId, listBreakline }), () => {
+                    console.log('loose'),
+                        this.kill();
+                });
+                player.spawnNewPiece(() => { this.update_sequence() },
+                    () => {
+                        this.io.to(this.id).emit('newPiece', {
+                            playerId: playerId,
+                            position: player.currentPiece.position,
+                            tetromino: player.currentPiece.grid,
+                        })
+                    }
+                    
+                )
+
             }
         }
 
