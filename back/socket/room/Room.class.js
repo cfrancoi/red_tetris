@@ -59,7 +59,7 @@ module.exports = class Room {
 
     }
 
-    start(playerId, io) {
+    start(player, io) {
 
         //TODO isowner
 
