@@ -8,6 +8,22 @@ module.exports = class TetrisGame {
     /** @type {Map<string, player>} */ players;
     tetrominos = [];
 
+    events = {
+        onGameOver: () => {
+            console.log('game over');
+            this.kill();
+            this.events.onFinish();
+        },
+        onBreakLines: (id, listBreakline) => this.io.to(this.id).emit('breakLine', { playerId: id, listBreakline }),
+        onNewPiece: (id, piece) => {
+            this.io.to(this.id).emit('newPiece', {
+                playerId: id,
+                position: piece.position,
+                tetromino: piece.grid,
+            })
+        }
+    }
+
     /**
      * 
      * @param {*} id 
@@ -58,13 +74,7 @@ module.exports = class TetrisGame {
         //INIT etc...
         this.players.forEach((player, key) => {
             player.spawnNewPiece(() => { this.update_sequence() },
-                () => {
-                    this.io.to(this.id).emit('newPiece', {
-                        playerId: key,
-                        position: player.currentPiece.position,
-                        tetromino: player.currentPiece.grid,
-                    })
-                })
+                this.events.onNewPiece)
         });
         this.Interval = setInterval(() => { this.gameLoop(this.io, this.players) }, 750);
     }
@@ -90,18 +100,12 @@ module.exports = class TetrisGame {
             this.io.to(this.id).emit(`updatePiece`, { playerId: playerId, piece: piece, fixed: piece.isFixed });
 
             if (piece.isFixed) {
-                player.checkTetris((listBreakline) => this.io.to(this.id).emit('breakLine', { playerId: playerId, listBreakline }), () => {
-                    console.log('loose');
-                    this.kill();
-                });
+                player.checkTetris(
+                    this.events.onBreakLines,
+                    this.events.onGameOver);
+
                 player.spawnNewPiece(() => { this.update_sequence() },
-                    () => {
-                        this.io.to(this.id).emit('newPiece', {
-                            playerId: playerId,
-                            position: player.currentPiece.position,
-                            tetromino: player.currentPiece.grid,
-                        })
-                    }
+                    this.events.onNewPiece
                 )
             }
         }

@@ -18,7 +18,7 @@ module.exports = function (socket, roomManager, io) {
 
   roomManager.events = {
     onFinish: (roomId, room) => {
-      io.to(roomId).emit('gameOver', roomPayload);
+      io.to(roomId).emit('roomGameOver', room.toJSON());
 
       room.players.forEach(player => {
         offTetrisEvents(player);

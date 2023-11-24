@@ -81,7 +81,8 @@ module.exports = class TetrisPlayer {
             for (let i = 0; i < breakLines.length; i++)
                 this.downGrid(breakLines[i]);
 
-            return onBreakLines(breakLines);
+            return onBreakLines(this.socket.id, breakLines);
+
         }
     }
     //FIXME 
@@ -141,18 +142,10 @@ module.exports = class TetrisPlayer {
             position: { x: 0, y: 0 }
         }
         newPiece.position = this.checkPositionTetrominos(newPiece.grid, newPiece.position);
-        // if (!this.canBePlace(newPiece.grid, newPiece.position)) {
-        //     onFail();
-        //     return this.currentPiece;
-        // }
         this.currentPiece = newPiece;
         this.tetrominos = this.tetrominos.splice(1);
-        onSuccess();
+        onSuccess(this.socket.id, this.currentPiece);
         return this.currentPiece;
-
-
-
-
     }
 
     canDown() {

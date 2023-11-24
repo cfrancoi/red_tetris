@@ -87,12 +87,14 @@ function previewPieceDrop(gameGrid, currentPiece) {
     line.forEach((cell, cellIndex) => {
       if (cell) {
         for (let i = lineIndex + y; i < (gameGrid.length); i++) {
-          let currentCell = gameGrid[i][cellIndex + x];
+          if (gameGrid[i]) {
+            let currentCell = gameGrid[i][cellIndex + x];
 
-          if (currentCell?.fixed || i + 1 === gameGrid.length) {
-            const distance = (i - lineIndex - y) - (currentCell?.fixed ? 1 : 0)
-            if ((distance < target.dist)) {
-              target = { dist: distance, y: lineIndex, x: cellIndex };
+            if (currentCell?.fixed || i + 1 === gameGrid.length) {
+              const distance = (i - lineIndex - y) - (currentCell?.fixed ? 1 : 0)
+              if ((distance < target.dist)) {
+                target = { dist: distance, y: lineIndex, x: cellIndex };
+              }
             }
           }
         }
