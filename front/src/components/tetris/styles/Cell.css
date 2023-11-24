@@ -43,8 +43,14 @@
 .line {
     display: flex;
 }
-.line.freeze{
+
+.freezeCell {
     background-color: transparent;
+}
+
+.fCell {
+    background-color: white;
+
 }
 
 .show {
