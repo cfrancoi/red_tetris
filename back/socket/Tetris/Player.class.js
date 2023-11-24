@@ -10,6 +10,7 @@ module.exports = class TetrisPlayer {
     tetrominos = [];
 
     constructor(socket, options) {
+        this.freezeLineIdx = options.height;
         this.grid = []; // Represents the game board (e.g., a 2D array)
         this.currentPiece = {
             position: { x: 0, y: 0 },
@@ -46,10 +47,18 @@ module.exports = class TetrisPlayer {
 
         this.grid[0] = Array(this.grid[0].length).fill({ type: '', isFixed: false });
     }
-    
-    freezeline(index)
-    {
-        this.grid[index].fill({type:'f',isFixed:true});
+
+    freezeNextLine(onFreezeLine) {
+        this.freezeLineIdx -= 1;
+
+        this.freezeline(this.freezeLineIdx);
+
+        onFreezeLine(this.socket.id, this.freezeLineIdx);
+    }
+
+
+    freezeline(index) {
+        this.grid[index].fill({ type: 'f', isFixed: true });
     }
 
 
@@ -58,7 +67,7 @@ module.exports = class TetrisPlayer {
         for (let i = 0; i < this.grid.length; i++) {
             let cpt = 0;
             for (let j = 0; j < this.grid[i].length; j++) {
-                if (this.grid[i][j].isFixed) {
+                if (this.grid[i][j].isFixed && this.grid[i][j].type !== 'f') {
                     cpt++;
                 }
                 if (cpt === this.grid[i].length) {
@@ -67,10 +76,13 @@ module.exports = class TetrisPlayer {
                 }
             }
         }
-        for (let i = 0; i < breakLines.length; i++)
-            this.downGrid(breakLines[i]);
 
-        return onBreakLines(breakLines);
+        if (breakLines && breakLines.length) {
+            for (let i = 0; i < breakLines.length; i++)
+                this.downGrid(breakLines[i]);
+
+            return onBreakLines(breakLines);
+        }
     }
     //FIXME 
     checkGameRules(onLose) {

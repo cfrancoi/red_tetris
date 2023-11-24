@@ -105,11 +105,35 @@ module.exports = class TetrisGame {
 
             // this.io.to(this.id).emit(`move${strUcFirst(direction)}`, { id: playerId, fixed: move.isFixed });
 
+            const onFreezeLine = (playerId, index) => {
+
+                this.io.to(this.id).emit('freezeLine',
+                    {
+                        playerId: playerId,
+                        index: index
+                    })
+
+            }
+
             if (piece.isFixed) {
-                player.checkTetris((listBreakline) => this.io.to(this.id).emit('breakLine', { playerId: playerId, listBreakline }), () => {
-                    console.log('loose'),
-                        this.kill();
-                });
+                player.checkTetris((listBreakline) => {
+                    if (listBreakline) {
+                        this.io.to(this.id).emit('breakLine',
+                            {
+                                playerId: playerId, listBreakline
+                            })
+                        this.players.forEach((value, key) => {
+                            if (key !== playerId)
+                                value.freezeNextLine(onFreezeLine);
+                        })
+                    }
+                }
+                    ,
+                    () => {
+                        console.log('loose'),
+                            this.kill();
+                    },
+                );
                 player.spawnNewPiece(() => { this.update_sequence() },
                     () => {
                         this.io.to(this.id).emit('newPiece', {

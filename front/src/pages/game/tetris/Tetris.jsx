@@ -44,6 +44,13 @@ export default function Tetris() {
                 }
             })
         }
+        socket.on('freezeLine', (payload) => {
+            console.log("payload = ", payload);
+            dispatch({
+                type: 'tetris/freezeLine', payload
+            })
+
+        })
         socket.on('breakLine', (payload) => {
             console.log("payload = ", payload);
             dispatch({

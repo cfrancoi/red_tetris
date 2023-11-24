@@ -323,15 +323,16 @@ const tetrisSlice = createSlice({
       })
     },
     freezeLine: (state, action) => {
-      const line = action.payload.freezeLine;
+      const line = action.payload.index;
       const playerId = action.payload.playerId;
 
       let player = getPlayer(state.players, playerId);
 
       console.log("line = ", line);
-      player.grid[line].fill({ ''})
+      player.grid[line].fill({ type: 'f', fixed: true });
     }
   }
+
 })
 
 
