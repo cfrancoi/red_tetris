@@ -40,8 +40,9 @@ module.exports = class RoomManager {
             room.removePlayer(player);
             this.clearEmptyRoom();
             const nextRoom = this.rooms.find(room => room.id === id);
-            this.events?.onLeave(id, player, nextRoom);
-            return this.rooms.find(room => room.id === id);
+            if (nextRoom)
+                this.events?.onLeave(id, player, nextRoom);
+            return nextRoom;
         }
     }
 
