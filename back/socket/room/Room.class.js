@@ -74,12 +74,13 @@ module.exports = class Room {
                     onEnd(this.id, this);
                 }
             }
+            this.status = EStatus.IN_PROGRESS;
+
+            this.game.start();
+
+            return true;
         }
-        this.status = EStatus.IN_PROGRESS;
-
-        this.game.start();
-
-        return true;
+        return false;
     }
 
 
