@@ -93,9 +93,6 @@ module.exports = class TetrisPlayer {
         }
     }
 
-
-
-
     /**
      * 
      * @param {(breakLines: [])} onBreakLines 
@@ -267,7 +264,6 @@ module.exports = class TetrisPlayer {
             pieceGrid.forEach((row, rowIndex) => {
                 row.forEach((cell, colIndex) => {
                     if (cell && (!gameGrid[rowIndex + y] || !gameGrid[rowIndex + y][colIndex + x])) {
-                        console.log(`colision: col: ${colIndex}  row: ${rowIndex}`)
                         hasColision = true;
                     }
 

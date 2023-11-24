@@ -14,7 +14,17 @@ module.exports = class TetrisGame {
             this.kill();
             this.events.onFinish();
         },
-        onBreakLines: (id, listBreakline) => this.io.to(this.id).emit('breakLine', { playerId: id, listBreakline }),
+        onFreezeLine: (id, index) => this.io.to(this.id).emit('freezeLine', { playerId: id, index }),
+        onBreakLines: (id, listBreakline) => {
+            if (listBreakline?.length) {
+                this.io.to(this.id).emit('breakLine', { playerId: id, listBreakline })
+                this.players.forEach((player, key) => {
+                    if (key !== id)
+                        player.freezeNextLine(this.events.onFreezeLine);
+                })
+            }
+
+        },
         onNewPiece: (id, piece) => {
             this.io.to(this.id).emit('newPiece', {
                 playerId: id,
