@@ -76,7 +76,7 @@ module.exports = class RoomManager {
             const room = this.rooms[idx];
             console.log(room);
 
-            if (room.start(player, io)) {
+            if (room.start(player, io, this.events.onFinish)) {
                 this.events?.onStart(room.id, player, room);
                 return room;
             };

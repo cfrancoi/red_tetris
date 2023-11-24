@@ -16,6 +16,11 @@ export default function StartRoomComponent() {
         dispatch({ type: CHANGE_GAME_STATE, gameState: ERoomStatus.IN_PROGRESS })
     }, [dispatch])
 
+    const gameOver = useCallback((room) => {
+        console.log(room)
+        dispatch({ type: CHANGE_GAME_STATE, gameState: room.status })
+    }, [dispatch])
+
     useEffect(() => {
         if (socket) {
             socket.on('roomStarted', () => {
@@ -27,6 +32,18 @@ export default function StartRoomComponent() {
             socket?.off('roomStarted');
         }
     }, [socket, startGame])
+
+    useEffect(() => {
+        if (socket) {
+            socket.on('roomGameOver', (room) => {
+                gameOver(room);
+            })
+        }
+
+        return () => {
+            socket?.off('roomGameOver');
+        }
+    }, [socket, gameOver])
 
     function onClick() {
         console.log('click for start room')

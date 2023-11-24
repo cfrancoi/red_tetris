@@ -59,7 +59,7 @@ module.exports = class Room {
 
     }
 
-    start(player, io) {
+    start(player, io, onEnd) {
 
         //TODO isowner
 
@@ -67,14 +67,21 @@ module.exports = class Room {
 
 
             this.game = new TetrisGame(this.id, this.players, io, this.options);
-            this.status = EStatus.IN_PROGRESS;
 
-            //io pour emit
-            this.game.start();
-
-            return true;
+            this.game.events = {
+                ...this.game.events, onFinish: () => {
+                    this.status = EStatus.GAME_OVER;
+                    onEnd(this.id, this);
+                }
+            }
         }
+        this.status = EStatus.IN_PROGRESS;
+
+        this.game.start();
+
+        return true;
     }
+
 
     leave(id) {
         for (let i = 0; this.player[i]; i++)
