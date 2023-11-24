@@ -23,12 +23,12 @@ module.exports = class TetrisPlayer {
 
     initializeBoard(rows, columns) {
         // Initialize the board with empty cells
-        this.grid = Array.from({ length: rows }, () => Array(columns).fill({ type: '', fixed: false }));
+        this.grid = Array.from({ length: rows }, () => Array(columns).fill({ type: '', isFixed: false }));
 
     }
 
     clearRows(index) {
-        this.grid[index].fill({ type: '', fixed: false });
+        this.grid[index].fill({ type: '', isFixed: false });
     }
 
     downGrid(index) {
@@ -44,19 +44,17 @@ module.exports = class TetrisPlayer {
             this.grid[i + 1] = this.grid[i];
         }
 
-        this.grid[0] = Array(this.grid[0].length).fill({ type: '', fixed: false });
+        this.grid[0] = Array(this.grid[0].length).fill({ type: '', isFixed: false });
     }
 
 
-
-    checkTetris(onBreakLines) {
+    checkBreakLine(onBreakLines) {
         let breakLines = [];
         for (let i = 0; i < this.grid.length; i++) {
             let cpt = 0;
             for (let j = 0; j < this.grid[i].length; j++) {
-                if (this.grid[i][j].fixed) {
+                if (this.grid[i][j].isFixed) {
                     cpt++;
-                    console.log("cpt = ", cpt);
                 }
                 if (cpt === this.grid[i].length) {
                     breakLines.push(i);
@@ -67,28 +65,74 @@ module.exports = class TetrisPlayer {
         for (let i = 0; i < breakLines.length; i++)
             this.downGrid(breakLines[i]);
 
-        if (breakLines.length) {
-            onBreakLines(breakLines);
-            breakLines.push(this.checkTetris(onBreakLines));
+        return onBreakLines(breakLines);
+    }
+    //FIXME 
+    checkGameRules(onLose) {
+        for (let j = 0; j < this.grid[0].length; j++) {
+            if (this.grid[0][j] && this.grid[0][j].isFixed)
+                return onLose();
         }
-        return breakLines;
     }
 
-    // Spawn a new Tetrimino
-    spawnNewPiece(generateSequence) {
+    /**
+     * 
+     * @param {(breakLines: [])} onBreakLines 
+     * @param {(reason: string)} onLose call if game rules is broke 
+     */
+    checkTetris(onBreakLines, onLose) {
+        this.checkBreakLine(onBreakLines);
+        this.checkGameRules(onLose);
+    }
+
+    /**
+     * 
+     * @param {tetrominos:[][]} newTetromino 
+     * @param {positionTetromino:{x,y}} positionTetromino 
+     */
+    checkPositionTetrominos(newTetromino, positionTetromino) {
+        let newPosition = { x: positionTetromino.x, y: positionTetromino.y };
+        for (let i = 0; i < newTetromino.length; i++) {
+            for (let j = 0; j < newTetromino[i].length; j++) {
+                if (this.grid[i][j] && this.grid[i][j].isFixed) {
+                    newPosition.y = newPosition.y - newTetromino.length + i;
+                    console.log('tetromino = ', newTetromino);
+                    console.log("newPosition = ", newPosition);
+                    return newPosition
+                }
+            }
+        }
+        return positionTetromino;
+    }
+
+    /**
+     * 
+     * @param {()} generateSequence function to generate tetromino sequence
+     * @param {()} onSuccess call when tetromino placed
+
+     * @returns 
+     */
+    spawnNewPiece(generateSequence, onSuccess) {
         if (!this.tetrominos.length)
             generateSequence();
 
-        this.currentPiece = {
+        const newPiece = {
             grid: this.tetrominos[0],
             position: { x: 0, y: 0 }
         }
+        newPiece.position = this.checkPositionTetrominos(newPiece.grid, newPiece.position);
+        // if (!this.canBePlace(newPiece.grid, newPiece.position)) {
+        //     onFail();
+        //     return this.currentPiece;
+        // }
+        this.currentPiece = newPiece;
         this.tetrominos = this.tetrominos.splice(1);
-        console.log("tertrominos=", this.tetrominos);
-        console.log("currentPiece=", this.currentPiece);
-
-        //  console.log("currentpiece =",this.currentPiece);
+        onSuccess();
         return this.currentPiece;
+
+
+
+
     }
 
     canDown() {
@@ -103,8 +147,8 @@ module.exports = class TetrisPlayer {
         return !this.handleCollision(this.grid, { grid: this.currentPiece.grid, position: { x: this.currentPiece.position.x - 1, y: this.currentPiece.position.y } });
     }
 
-    canBePlace(newPieceGrid) {
-        return !this.handleCollision(this.grid, { grid: newPieceGrid, position: { x: this.currentPiece.position.x, y: this.currentPiece.position.y } });
+    canBePlace(newPieceGrid, position) {
+        return !this.handleCollision(this.grid, { grid: newPieceGrid, position: position });
     }
 
     // Move the current Tetrimino
@@ -168,7 +212,8 @@ module.exports = class TetrisPlayer {
         if (this.currentPiece) {
             const newGrid = this.rotateMatrix(this.currentPiece.grid);
 
-            if (this.canBePlace(newGrid)) {
+            //FIXME 
+            if (this.canBePlace(newGrid, this.currentPiece.position)) {
                 this.currentPiece.grid = newGrid;
                 const isFixed = !this.canDown();
                 this.updateGameGrid(this.grid, this.currentPiece, this.currentPiece.grid, isFixed);
@@ -189,7 +234,6 @@ module.exports = class TetrisPlayer {
     handleCollision(gameGrid, currentPiece) {
 
         const pieceGrid = currentPiece.grid;
-        console.log("pieceGrid = ", pieceGrid);
         let hasColision = false;
 
         if (currentPiece.position) {
@@ -200,7 +244,7 @@ module.exports = class TetrisPlayer {
             gameGrid.forEach((row, rowIndex) => {
                 row.forEach((cell, colIndex) => {
                     if (pieceGrid[rowIndex - y] && pieceGrid[rowIndex - y][colIndex - x]) {
-                        if (gameGrid[rowIndex][colIndex].fixed) {
+                        if (gameGrid[rowIndex][colIndex].isFixed) {
                             hasColision = true;
                         }
                     }
@@ -233,7 +277,7 @@ module.exports = class TetrisPlayer {
         // Implement rendering logic to display the game state
     }
 
-    updateGameGrid(gameGrid, currentPiece, newPieceGrid, fixed = false) {
+    updateGameGrid(gameGrid, currentPiece, newPieceGrid, isFixed = false) {
         if (currentPiece.position) {
             // Récupérez la position de la pièce en cours
             const { x, y } = currentPiece.position;
@@ -241,9 +285,9 @@ module.exports = class TetrisPlayer {
             // Parcourez la grille du jeu
             gameGrid.forEach((row, rowIndex) => {
                 row.forEach((cell, colIndex) => {
-                    // Effacez les cellules où fixed est false (ancienne pièce)
-                    if (!cell.fixed) {
-                        gameGrid[rowIndex][colIndex] = { type: '', fixed: false };
+                    // Effacez les cellules oùisFixed est false (ancienne pièce)
+                    if (!cell.isFixed) {
+                        gameGrid[rowIndex][colIndex] = { type: '', isFixed: false };
                     }
 
                     // Vérifiez si la cellule correspond à la pièce en cours et qu'elle est remplie
@@ -251,7 +295,7 @@ module.exports = class TetrisPlayer {
                         // Mettez à jour la cellule dans la grille du jeu
                         gameGrid[rowIndex][colIndex] = {
                             type: newPieceGrid[rowIndex - y][colIndex - x],
-                            fixed: fixed,
+                            isFixed: isFixed,
                         };
                     }
                 });

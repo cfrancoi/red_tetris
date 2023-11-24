@@ -33,8 +33,13 @@ function rotateMatrix(matrix) {
 
 function updateGameGrid(gameGrid, currentPiece, newPieceGrid, fixed = false) {
   if (currentPiece.position) {
+
+
     // Récupérez la position de la pièce en cours
     const { x, y } = currentPiece.position;
+
+    const target = previewPieceDrop(gameGrid, currentPiece);
+
 
     // Parcourez la grille du jeu
     gameGrid.forEach((row, rowIndex) => {
@@ -42,6 +47,10 @@ function updateGameGrid(gameGrid, currentPiece, newPieceGrid, fixed = false) {
         // Effacez les cellules où fixed est false (ancienne pièce)
         if (!cell.fixed) {
           gameGrid[rowIndex][colIndex] = { type: '', fixed: false };
+        }
+
+        if (cell.preview) {
+          gameGrid[rowIndex][colIndex] = { ...gameGrid[rowIndex][colIndex], preview: false };
         }
 
         // Vérifiez si la cellule correspond à la pièce en cours et qu'elle est remplie
@@ -52,9 +61,54 @@ function updateGameGrid(gameGrid, currentPiece, newPieceGrid, fixed = false) {
             fixed: fixed,
           };
         }
+        if (newPieceGrid[rowIndex - target.y] && newPieceGrid[rowIndex - target.y][colIndex - target.x]) {
+          // Mettez à jour la cellule dans la grille du jeu
+          gameGrid[rowIndex][colIndex] = {
+            ...gameGrid[rowIndex][colIndex],
+            preview: true
+          };
+        }
       });
     });
+
+
+
   }
+}
+
+
+function previewPieceDrop(gameGrid, currentPiece) {
+  const { x, y } = currentPiece.position;
+
+  const grid = [...currentPiece.grid]
+  let target = { dist: gameGrid.length + 1 }
+
+  grid.forEach((line, lineIndex) => {
+    line.forEach((cell, cellIndex) => {
+      if (cell) {
+        for (let i = lineIndex + y; i < (gameGrid.length); i++) {
+          let currentCell = gameGrid[i][cellIndex + x];
+
+          if (currentCell?.fixed || i + 1 === gameGrid.length) {
+            const distance = (i - lineIndex - y) - (currentCell?.fixed ? 1 : 0)
+            if ((distance < target.dist)) {
+              target = { dist: distance, y: lineIndex, x: cellIndex };
+            }
+          }
+        }
+      }
+    })
+  })
+
+  if (target) {
+    target = {
+      // x: (x - (currentPiece.grid[0].length - target.x)),
+      x: x,
+      y: y + target.dist
+    };
+  }
+
+  return target;
 }
 
 /**
@@ -267,7 +321,6 @@ const tetrisSlice = createSlice({
         console.log("line = ", line);
         downOneLine(line, player.grid);
       })
-
 
     }
 
