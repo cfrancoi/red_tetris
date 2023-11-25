@@ -60,6 +60,14 @@ export default function Tetris() {
                 type: 'tetris/downGrid', payload
             })
         })
+
+        socket.on('shadowBoard', (payload) => {
+            console.log("payload = ", payload);
+
+            dispatch({
+                type: 'tetris/printShadowBoard', payload
+            })
+        })
         return () => {
             socket?.off('moveDown');
             socket?.off('moveRight');
@@ -67,6 +75,8 @@ export default function Tetris() {
             socket?.off('updatePiece');
             socket?.off('newPiece');
             socket?.off('breakLine');
+            socket?.off('freezeLine');
+            socket?.off('shadowBoard');
         }
 
     }, [dispatch, socket, tetris]);
@@ -75,9 +85,17 @@ export default function Tetris() {
     return (
         <div className="tetris-list">
             {tetris.players.map(p => {
-                if (p.id) {
+                if (p.me) {
                     return (
                         <TetrisTable key={p.id} height={20} width={10} playerId={p.id} isControlled={p.me} />
+                    )
+                }
+            })}
+
+            {tetris.players.map(p => {
+                if (p.id && !p.me) {
+                    return (
+                        <TetrisTable key={p.id} height={20} width={10} playerId={p.id} isControlled={false} />
                     )
                 }
             })}

@@ -114,7 +114,7 @@ module.exports = class TetrisGame {
                     this.events.onBreakLines,
                     this.events.onGameOver);
                 player.socket.emit(`updatePiece`, { playerId: playerId, piece: piece, fixed: piece.isFixed });
-                player.socket.to(this.id).emit('shadowBoard', { roomId: this.id, shadowboard: player.getShadowBoard() })
+                player.socket.to(this.id).emit('shadowBoard', { roomId: this.id, playerId: player.socket.id, shadowboard: player.getShadowBoard() })
                 player.spawnNewPiece(() => { this.update_sequence() },
                     this.events.onNewPiece
                 )
