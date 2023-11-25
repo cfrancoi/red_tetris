@@ -76,6 +76,23 @@ function updateGameGrid(gameGrid, currentPiece, newPieceGrid, fixed = false) {
   }
 }
 
+function printShadowBoard(grid, shadowBoardGrid) {
+  grid.forEach((line, lineIndex) => {
+
+    line.forEach((cell, cellIndex) => {
+
+      if (!cell.fixed) {
+        grid[lineIndex][cellIndex] = { type: '', fixed: false };
+      }
+
+      if (shadowBoardGrid[cellIndex] === lineIndex) {
+        grid[lineIndex][cellIndex] = { type: 'L' }
+      }
+    })
+  })
+}
+
+
 
 function previewPieceDrop(gameGrid, currentPiece) {
   const { x, y } = currentPiece.position;
@@ -318,11 +335,22 @@ const tetrisSlice = createSlice({
 
       console.log("line = ", line);
       player.grid[line].fill({ type: 'f', fixed: true });
+    },
+    printShadowBoard: (state, action) => {
+      const shadowboard = action.payload.shadowboard;
+      const playerId = action.payload.playerId;
+
+      let player = getPlayer(state.players, playerId);
+
+
+      printShadowBoard(player.grid, shadowboard);
+
+      // console.log("line = ", line);
+      // player.grid[line].fill({ type: 'f', fixed: true });
     }
   }
 
 })
-
 
 export default tetrisSlice;
 

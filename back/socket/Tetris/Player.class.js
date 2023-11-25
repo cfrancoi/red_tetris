@@ -331,12 +331,16 @@ module.exports = class TetrisPlayer {
     getShadowBoard() {
         let shadowBoard = [];
 
-        for (let rowIndex = 0; rowIndex < this.grid[0][rowIndex].length; rowIndex++) {
-            //grid[i][rowIndex]
+        for (let rowIndex = 0; rowIndex < this.grid[0].length; rowIndex++) {
 
-            for (let line = 0; line < this.grid[line].length; line++) {
-                if (this.grid[line][rowIndex].isFixed || line + 1 === this.grid[line].length) {
+            for (let line = 0; line < this.grid.length; line++) {
+
+                if (this.grid[line][rowIndex].isFixed) {
                     shadowBoard.push(line);
+                    break;
+                }
+                else if (line + 1 === this.grid.length) {
+                    shadowBoard.push(line + 1);
                     break;
                 }
             }

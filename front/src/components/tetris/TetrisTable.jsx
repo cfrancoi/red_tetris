@@ -62,12 +62,12 @@ export default function TetrisTable({ playerId, isControlled }) {
       {tetris?.grid.map((line, index) => {
         return (
           <div key={index}>
-            <Line line={line}></Line>
+            <Line line={line} isOpponent={!isControlled}></Line>
           </div>
         );
       })}
 
-      {`score: ${tetris.score} playerId: ${playerId}`}
+      {`score: ${tetris.score} playerId: ${playerId} isOpponent:${!isControlled}`}
     </div>
   );
 }

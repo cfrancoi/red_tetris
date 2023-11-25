@@ -1,13 +1,18 @@
 import PropTypes from 'prop-types';
 import './styles/Cell.css'
 
-export default function Line({ line }) {
+export default function Line({ line, isOpponent }) {
+
+  console.log('isOpponnent: ' + isOpponent)
   return (
     <div className='line'>
       {line.map((cell, index) => {
         const preview = (cell.preview) ? 'preview' : '';
         return (
-          <div className={`defaultCell ${(cell.type != 'default') ? cell.type + 'Cell' : ''} ${preview}`} key={index}>
+          <div key={index} className={`defaultCell
+            ${(isOpponent) ? 'opponentCell' : ''}
+            ${(cell.type != 'default') ? cell.type + 'Cell' : ''}
+            ${preview}`}>
             {/* {cell.color} */}
           </div>
         )
@@ -18,5 +23,6 @@ export default function Line({ line }) {
 }
 
 Line.propTypes = {
-  line: PropTypes.array.isRequired
+  line: PropTypes.array.isRequired,
+  isOpponent: PropTypes.bool
 }
