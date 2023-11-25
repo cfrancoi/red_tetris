@@ -11,11 +11,14 @@ import Tetris from "../tetris/Tetris";
 import Navbar from "../../../components/layout/Navbar";
 import { routes } from "../../../routes/route.constant";
 import RoomStatus from "../../../components/room/roomStatus/RoomStatus";
+import EndingRoom from "../../../components/room/EndingRoom/EndingRoom";
 
 
 const toPrint = [
     <div key={ERoomStatus.NOT_STARTED}>waiting</div>,
-    <Tetris key={ERoomStatus.IN_PROGRESS}>in game</Tetris>
+    <Tetris key={ERoomStatus.IN_PROGRESS}>in game</Tetris>,
+    <div key={ERoomStatus.PAUSED}>waiting</div>,
+    <EndingRoom key={ERoomStatus.GAME_OVER}>end</EndingRoom>
 ]
 
 export default function Room() {
@@ -38,9 +41,6 @@ export default function Room() {
 
     useEffect(() => {
         if (socket && !tetris.roomId) {
-            // if (search.get('name')) {
-
-            // }
             socket.emit('requestRoom', roomId)
             return () => {
             }
