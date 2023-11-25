@@ -312,7 +312,6 @@ module.exports = class TetrisPlayer {
         }
     }
 
-
     rotateMatrix(matrix) {
         const rows = matrix.length;
         const cols = matrix[0].length;
@@ -327,6 +326,24 @@ module.exports = class TetrisPlayer {
         }
 
         return rotatedMatrix;
+    }
+
+    getShadowBoard() {
+        let shadowBoard = [];
+
+        for (let rowIndex = 0; rowIndex < this.grid[0][rowIndex].length; rowIndex++) {
+            //grid[i][rowIndex]
+
+            for (let line = 0; line < this.grid[line].length; line++) {
+                if (this.grid[line][rowIndex].isFixed || line + 1 === this.grid[line].length) {
+                    shadowBoard.push(line);
+                    break;
+                }
+            }
+
+        }
+
+        return shadowBoard;
     }
 
 }

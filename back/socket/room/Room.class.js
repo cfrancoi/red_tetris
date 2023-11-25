@@ -12,6 +12,8 @@ const EStatus = {
 const defaultHeight = 20;
 const defaultWidth = 10;
 
+
+//TODO use isOwner() and add event to tell all errors
 module.exports = class Room {
     id;
     status;
@@ -83,7 +85,6 @@ module.exports = class Room {
         return false;
     }
 
-
     leave(id) {
         for (let i = 0; this.player[i]; i++)
             if (this.player[i].id === id)
@@ -97,5 +98,14 @@ module.exports = class Room {
               this.options.height = option.height
           if (option.width)
               this.options.width = option.width */
+    }
+
+    restartRoom(id, player) {
+        if (this.status === EStatus.GAME_OVER) {
+            this.status = EStatus.NOT_STARTED;
+
+            return true;
+        }
+        return false
     }
 }

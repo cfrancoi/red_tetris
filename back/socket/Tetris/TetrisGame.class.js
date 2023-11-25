@@ -107,13 +107,14 @@ module.exports = class TetrisGame {
         const piece = player?.move(direction);
 
         if (piece) {
-            this.io.to(this.id).emit(`updatePiece`, { playerId: playerId, piece: piece, fixed: piece.isFixed });
-
+            // this.io.to(this.id).emit(`updatePiece`, { playerId: playerId, piece: piece, fixed: piece.isFixed });
+            player.socket.emit(`updatePiece`, { playerId: playerId, piece: piece, fixed: piece.isFixed });
             if (piece.isFixed) {
                 player.checkTetris(
                     this.events.onBreakLines,
                     this.events.onGameOver);
-
+                player.socket.emit(`updatePiece`, { playerId: playerId, piece: piece, fixed: piece.isFixed });
+                player.socket.to(this.id).emit('shadowBoard', { roomId: this.id, shadowboard: player.getShadowBoard() })
                 player.spawnNewPiece(() => { this.update_sequence() },
                     this.events.onNewPiece
                 )

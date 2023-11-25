@@ -96,4 +96,13 @@ module.exports = class RoomManager {
         return this.getRoomById(id)?.game;
     }
 
+    restartRoom(id, player) {
+
+        const room = this.getRoomById(id);
+
+        if (room?.restartRoom(player)) {
+            this.events?.onRestartRoom(room.id, player, room);
+        }
+    }
+
 }

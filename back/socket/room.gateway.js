@@ -44,6 +44,12 @@ module.exports = function (socket, roomManager, io) {
       player.data.tetrisRoomId = room.id;
       player.to(room.id).emit('roomJoined', room.toJSON())
       player.emit('roomJoined', room.toJSON(socket.id))
+    },
+    onRestartRoom: (roomId, player, room) => {
+      console.log(`room ${roomId} restarted by ${player.id}`);
+      io.to(roomId).emit('roomRestarted', roomId);
+
+      io.to(roomId).emit('roomGameOver', room.toJSON());
     }
   }
 
@@ -51,6 +57,7 @@ module.exports = function (socket, roomManager, io) {
     roomManager.addPlayerToRoom(arg, socket);
   });
 
+  //TODO CLEARME start game /!\
   socket.on('startRoom', (arg) => {
     roomManager.startRoom(arg, socket, io);
   });
@@ -59,6 +66,12 @@ module.exports = function (socket, roomManager, io) {
     roomManager.removePlayerFromRoom(roomId, socket);
   });
 
+  //TODO clear difference between start and restart one is for the game this case it's to restart room cycle.
+  socket.on('restartRoom', (roomId) => {
+    roomManager.restartRoom(roomId, socket);
+  });
+
+  //TODO for bonnus change game options
   socket.on('updateRoom', (arg) => {
   });
 }
