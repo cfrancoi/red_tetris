@@ -113,22 +113,6 @@ function previewPieceDrop(gameGrid, currentPiece) {
   return target;
 }
 
-/**
- *  MOVE CHECK //TODO
-*/
-
-function canMoveDown(grid, currentPiece) {
-  return true;
-}
-
-function canMoveLeft(grid, currentPiece) {
-  return (currentPiece.position.x && currentPiece.position.x > 0);
-}
-
-function canMoveRight(grid, currentPiece) {
-  return true
-}
-
 function getPlayer(players, id) {
   return players.find(p => p.id === id);
 }
@@ -287,16 +271,18 @@ const tetrisSlice = createSlice({
     changeGameState: (state, action) => {
       state.gameState = action.gameState;
     },
-    reset: (state) => {
-      state = {
+    reset: () => {
+      return {
         players: [],
         options: {
           height: defaultHeight,
           width: defaultWidth
-        },
+        }
       };
-
-      return state;
+    },
+    resetGrid: (state) => {
+      state.players?.forEach(p => p.grid = Array.from(Array(state.options.height), () => new Array(state.options.width).fill({}))
+      )
     },
     breakLine: (state, action) => {
       console.log("action = ", action);
