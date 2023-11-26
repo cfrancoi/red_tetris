@@ -26,10 +26,15 @@ module.exports = class TetrisGame {
 
         },
         onNewPiece: (id, piece) => {
-            this.io.to(this.id).emit('newPiece', {
+
+            console.log(piece);
+            console.log(id);
+
+            this.io.to(id).emit('newPiece', {
                 playerId: id,
                 position: piece.position,
                 tetromino: piece.grid,
+                nextPiece: piece.nextPiece
             })
         }
     }
@@ -75,8 +80,8 @@ module.exports = class TetrisGame {
     }
 
     init() {
-        console.log('init');
-        get_tetrominos(this.tetrominos);
+        // console.log('init');
+        // get_tetrominos(this.tetrominos);
     }
 
     start() {

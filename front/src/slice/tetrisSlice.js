@@ -144,14 +144,7 @@ const tetrisSlice = createSlice({
       width: defaultWidth
     },
     players: [
-      {
-        score: 0,
-        currentPiece: {
-          position: { x: 0, y: 0 },
-          grid: null,
-        },
-        grid: Array.from(Array(defaultHeight), () => new Array(defaultWidth).fill({}))
-      },
+
     ]
   },
   reducers: {
@@ -237,16 +230,19 @@ const tetrisSlice = createSlice({
       player.currentPiece = null;
     },
     newPiece: (state, action) => {
+
       let player = getPlayer(state.players, action.payload.playerId);
-      if (!player.currentPiece) {
+      // if (!player.currentPiece) {
 
-        player.currentPiece = {
-          position: action.payload.position,
-          grid: action.payload.tetromino,
-        }
-
-        updateGameGrid(player.grid, player.currentPiece, player.currentPiece.grid, false);
+      player.currentPiece = {
+        position: action.payload.position,
+        grid: action.payload.tetromino,
       }
+
+      player.nextPiece = action.payload.nextPiece;
+
+      updateGameGrid(player.grid, player.currentPiece, player.currentPiece.grid, false);
+      // }
     },
 
     /**

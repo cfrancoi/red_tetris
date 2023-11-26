@@ -2,8 +2,6 @@ import PropTypes from 'prop-types';
 import './styles/Cell.css'
 
 export default function Line({ line, isOpponent }) {
-
-  console.log('isOpponnent: ' + isOpponent)
   return (
     <div className='line'>
       {line.map((cell, index) => {

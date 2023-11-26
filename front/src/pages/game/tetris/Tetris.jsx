@@ -1,93 +1,22 @@
-import { useDispatch, useSelector } from "react-redux";
-import TetrisTable from "../../../components/tetris/TetrisTable";
-import { useSocket } from "../../../context/SocketContext";
-import { useEffect } from "react";
-import Navbar from "../../../components/layout/Navbar";
-import { routes } from "../../../routes/route.constant";
+import { useSelector } from "react-redux";
+import TetrisBoard from "../../../components/tetris/TetrisBoard";
 
 import './styles.css'
+import PreviewNextPiece from "../../../components/tetris/PreviewNextPiece";
 
 
 export default function Tetris() {
-
-
     const tetris = useSelector(state => state.tetris);
-    const dispatch = useDispatch();
-    const { socket } = useSocket();
-
-    // const useSocket
-
-
-    useEffect(() => {
-        if (socket) {
-            socket.on('newPiece', (payload) => {
-                dispatch({
-                    type: 'tetris/newPiece', payload: {
-                        playerId: payload.playerId,
-                        tetromino: payload.tetromino,
-                        position: payload.position
-                    }
-                })
-            })
-
-            socket.on('updatePiece', (payload) => {
-                dispatch({
-                    type: 'tetris/updatePiece', payload: payload
-                })
-
-                if (payload.fixed) {
-                    dispatch({
-                        type: 'tetris/blockPiece', payload: {
-                            playerId: (payload.playerId) ? payload.playerId : null
-                        }
-                    })
-                }
-            })
-        }
-        socket.on('freezeLine', (payload) => {
-            console.log("payload = ", payload);
-            dispatch({
-                type: 'tetris/freezeLine', payload
-            })
-
-        })
-        socket.on('breakLine', (payload) => {
-            console.log("payload = ", payload);
-            dispatch({
-                type: 'tetris/breakLine', payload
-            })
-            dispatch({
-                type: 'tetris/downGrid', payload
-            })
-        })
-
-        socket.on('shadowBoard', (payload) => {
-            console.log("payload = ", payload);
-
-            dispatch({
-                type: 'tetris/printShadowBoard', payload
-            })
-        })
-        return () => {
-            socket?.off('moveDown');
-            socket?.off('moveRight');
-            socket?.off('moveLeft');
-            socket?.off('updatePiece');
-            socket?.off('newPiece');
-            socket?.off('breakLine');
-            socket?.off('freezeLine');
-            socket?.off('shadowBoard');
-        }
-
-    }, [dispatch, socket, tetris]);
-
 
     return (
         <div className="tetris-list">
             {tetris.players.map(p => {
                 if (p.me) {
                     return (
-                        <TetrisTable key={p.id} height={20} width={10} playerId={p.id} isControlled={p.me} />
+                        <>
+                            <TetrisBoard key={p.id} height={20} width={10} playerId={p.id} isControlled={p.me} />
+                            <PreviewNextPiece piece={p.nextPiece} />
+                        </>
                     )
                 }
             })}
@@ -95,7 +24,7 @@ export default function Tetris() {
             {tetris.players.map(p => {
                 if (p.id && !p.me) {
                     return (
-                        <TetrisTable key={p.id} height={20} width={10} playerId={p.id} isControlled={false} />
+                        <TetrisBoard key={p.id} height={20} width={10} playerId={p.id} isControlled={false} />
                     )
                 }
             })}
