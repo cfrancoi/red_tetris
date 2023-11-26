@@ -13,7 +13,7 @@ const EMOVE = {
   DROP: 'drop'
 }
 
-export default function TetrisTable({ playerId, isControlled }) {
+export default function TetrisBoard({ playerId, isControlled }) {
   const [show, setShow] = useState(false);
   const tetris = useSelector(state => (state.tetris.players.find(p => p.id === playerId)));
   const roomId = useSelector(state => (state.tetris.roomId));
@@ -72,7 +72,7 @@ export default function TetrisTable({ playerId, isControlled }) {
   );
 }
 
-TetrisTable.propTypes = {
+TetrisBoard.propTypes = {
   playerId: PropTypes.string.isRequired,
   isControlled: PropTypes.bool.isRequired
 }

@@ -131,7 +131,7 @@ module.exports = class TetrisPlayer {
      * @returns 
      */
     spawnNewPiece(generateSequence, onSuccess) {
-        if (!this.tetrominos.length)
+        if (this.tetrominos.length < 2)
             generateSequence();
 
         const newPiece = {
@@ -141,7 +141,7 @@ module.exports = class TetrisPlayer {
         newPiece.position = this.checkPositionTetrominos(newPiece.grid, newPiece.position);
         this.currentPiece = newPiece;
         this.tetrominos = this.tetrominos.splice(1);
-        onSuccess(this.socket.id, this.currentPiece);
+        onSuccess(this.socket.id, { ...this.currentPiece, nextPiece: this.tetrominos[0] });
         return this.currentPiece;
     }
 

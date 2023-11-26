@@ -12,6 +12,7 @@ import Navbar from "../../../components/layout/Navbar";
 import { routes } from "../../../routes/route.constant";
 import RoomStatus from "../../../components/room/roomStatus/RoomStatus";
 import EndingRoom from "../../../components/room/EndingRoom/EndingRoom";
+import GameEvent from "../../../components/tetris/GameEvent";
 
 
 const toPrint = [
@@ -69,6 +70,8 @@ export default function Room() {
             <RoomPlayerList players={tetris.players}></RoomPlayerList>
             <StartRoomComponent></StartRoomComponent>
             {tetris.gameState}
+
+            <GameEvent />
 
             {toPrint[tetris.gameState]}
         </>

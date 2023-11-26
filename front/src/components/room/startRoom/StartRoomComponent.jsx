@@ -17,7 +17,6 @@ export default function StartRoomComponent() {
     }, [dispatch])
 
     const gameOver = useCallback((room) => {
-        console.log(room)
         dispatch({ type: CHANGE_GAME_STATE, gameState: room.status })
     }, [dispatch])
 
