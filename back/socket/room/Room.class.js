@@ -71,9 +71,9 @@ module.exports = class Room {
             this.game = new TetrisGame(this.id, this.players, io, this.options);
 
             this.game.events = {
-                ...this.game.events, onFinish: () => {
+                ...this.game.events, onFinish: (result) => {
                     this.status = EStatus.GAME_OVER;
-                    onEnd(this.id, this);
+                    onEnd(this.id, this, result);
                 }
             }
             this.status = EStatus.IN_PROGRESS;

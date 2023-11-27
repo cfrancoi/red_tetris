@@ -1,10 +1,16 @@
 import './style.css'
 
-function GameResults() {
+function GameResults({result}) {
     return (
         <div className='box'>
-            Simple Result
-            like winner looser...
+            {result.map(p => {
+                return  (
+                <>
+                {`id: ${p.playerId} , rank: #${p.rank}, score: ${p.score}`}
+                <br />
+                </>
+                )
+            })}
         </div>
     )
 }

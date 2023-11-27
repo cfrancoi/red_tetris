@@ -9,10 +9,20 @@ module.exports = class TetrisGame {
     tetrominos = [];
 
     events = {
-        onGameOver: () => {
+        onGameOver: (player) => {
             console.log('game over');
-            this.kill();
-            this.events.onFinish();
+
+            player.rank = this.nextRank;
+
+            this.nextRank = +this.nextRank - 1;
+
+            console.log(`${this.nextRank} ${this.nextRank - 1}`)
+
+            if (this.isEnd()) {
+                //TODO set rank to last player !!!!!!!!
+                this.kill();
+                this.events.onFinish(this.getResult());
+            }
         },
         onFreezeLine: (id, index) => this.io.to(this.id).emit('freezeLine', { playerId: id, index }),
         onBreakLines: (id, listBreakline) => {
@@ -52,11 +62,10 @@ module.exports = class TetrisGame {
         this.io = io;
         this.players = new Map(); // Map to store player instances
 
-
         players.forEach(player => {
             this.players.set(player.id, new TetrisPlayer(player, options));
         });
-        console.log(this.players);
+        this.nextRank = this.players.size;
     }
 
     // Add a method to create a new player
@@ -103,7 +112,8 @@ module.exports = class TetrisGame {
 
     gameLoop(io, players) {
         players.forEach((player, key) => {
-            this.movePlayer(key, 'down');
+            if (!player.gameOver)
+                this.movePlayer(key, 'down');
         });
     }
 
@@ -128,4 +138,36 @@ module.exports = class TetrisGame {
 
     }
 
+    isEnd() {
+        let loosers = 0;
+
+        this.players.forEach((p, key) => {
+            if (p.gameOver) {
+                loosers += 1
+            }
+        });
+        console.log(`${loosers}/${this.players.size} players`);
+        if (this.players.size === 1) {
+            return (loosers === 1);
+        }
+        else if (this.players.size > 1) {
+            return (loosers === (this.players.size - 1))
+        }
+
+        return false
+    }
+
+
+    getResult() {
+        let result = [];
+
+        this.players.forEach((p, key) => {
+            result.push({
+                playerId: key,
+                rank: p.rank,
+                score: p.score
+            })
+        });
+        return result;
+    }
 }

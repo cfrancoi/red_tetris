@@ -341,8 +341,9 @@ const tetrisSlice = createSlice({
 
       printShadowBoard(player.grid, shadowboard);
 
-      // console.log("line = ", line);
-      // player.grid[line].fill({ type: 'f', fixed: true });
+    },
+    setGameResult: (state, action) => {
+      state.result = action.result;
     }
   }
 

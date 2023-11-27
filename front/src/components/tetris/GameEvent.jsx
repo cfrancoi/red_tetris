@@ -8,7 +8,6 @@ export default function GameEvent() {
 
     useEffect(() => {
         socket?.on('newPiece', (payload) => {
-            console.log(payload);
             dispatch({
                 type: 'tetris/newPiece', payload: {
                     playerId: payload.playerId,
@@ -34,14 +33,11 @@ export default function GameEvent() {
         })
 
         socket?.on('freezeLine', (payload) => {
-            console.log("payload = ", payload);
             dispatch({
                 type: 'tetris/freezeLine', payload
             })
-
         })
         socket?.on('breakLine', (payload) => {
-            console.log("payload = ", payload);
             dispatch({
                 type: 'tetris/breakLine', payload
             })
@@ -51,8 +47,6 @@ export default function GameEvent() {
         })
 
         socket?.on('shadowBoard', (payload) => {
-            console.log("payload = ", payload);
-
             dispatch({
                 type: 'tetris/printShadowBoard', payload
             })

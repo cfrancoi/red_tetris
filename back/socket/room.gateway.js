@@ -17,12 +17,14 @@ module.exports = function (socket, roomManager, io) {
   }
 
   roomManager.events = {
-    onFinish: (roomId, room) => {
-      io.to(roomId).emit('roomGameOver', room.toJSON());
+    onFinish: (roomId, room, result) => {
+      io.to(roomId).emit('roomGameOver', { room: room.toJSON(), result });
 
       room.players.forEach(player => {
         offTetrisEvents(player);
       });
+
+      room.game = null;
     },
     onLeave: (roomId, player, room) => {
       player.leave(roomId);
@@ -47,9 +49,8 @@ module.exports = function (socket, roomManager, io) {
     },
     onRestartRoom: (roomId, player, room) => {
       console.log(`room ${roomId} restarted by ${player.id}`);
-      io.to(roomId).emit('roomRestarted', roomId);
+      io.to(roomId).emit('roomRestarted', room.toJSON());
 
-      io.to(roomId).emit('roomGameOver', room.toJSON());
     }
   }
 
