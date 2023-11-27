@@ -4,7 +4,7 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 
 
-const WebSocketContext = createContext(null);
+export const WebSocketContext = createContext(null);
 
 // eslint-disable-next-line react-refresh/only-export-components
 export function useSocket() {

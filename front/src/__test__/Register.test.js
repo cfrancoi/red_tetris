@@ -1,28 +1,16 @@
-import { prettyDOM, render, screen } from '@testing-library/react'
+import { prettyDOM, screen } from '@testing-library/react'
 import Register from '../pages/login/Register'
-import { BrowserRouter } from 'react-router-dom'
-import { Provider } from 'react-redux'
-import WebSocketProvider from '../context/SocketContext'
-import { store } from '../store'
+import customRender, { defaultProps } from './test-utils'
 
-test('loads and displays login', async () => {
+test('loads and displays Register', async () => {
     // ARRANGE
-    render(
-        <BrowserRouter>
-            <Provider store={store}>
-                <WebSocketProvider>
-                    <Register />
-                </ WebSocketProvider>
-            </ Provider>
-        </ BrowserRouter>)
+    customRender(<Register />, defaultProps)
 
     console.log(prettyDOM())
 
     // ASSERT
-    expect(await screen.getByText('Login')).toBeVisible()
-    expect(screen.getByText('Email')).toBeVisible()
-    expect(screen.getByText('Password')).toBeVisible()
-
-    expect(screen.getByText('Register')).toBeVisible()
-    // expect(screen.getByTestId('login-button')).toHaveTextContent('Login')
+    expect(screen.getByText('Login'))
+    expect(screen.getByText('Email'))
+    expect(screen.getByText('Password'))
+    expect(screen.getByText('Register'))
 })

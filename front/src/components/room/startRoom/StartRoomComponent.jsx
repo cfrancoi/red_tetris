@@ -11,7 +11,6 @@ export default function StartRoomComponent() {
     const roomId = useSelector(state => state.tetris.roomId);
     const dispatch = useDispatch();
 
-
     const startGame = useCallback(() => {
         dispatch({ type: CHANGE_GAME_STATE, gameState: ERoomStatus.IN_PROGRESS })
     }, [dispatch])
@@ -35,7 +34,6 @@ export default function StartRoomComponent() {
             socket.on('roomRestarted', (room) => {
                 restartRoom(room);
             })
-
             
         }
 
@@ -67,5 +65,4 @@ export default function StartRoomComponent() {
     return (
         <button onClick={onClick}> START GAME </button>
     )
-
 }
