@@ -16,7 +16,8 @@ module.exports = class TetrisPlayer {
             position: { x: 0, y: 0 },
             grid: L_TETROMINO,
         }; // The currently falling Tetrimino
-        this.score = 0;
+        this.rank = 1; //TODO cheat code remove it
+        this.score = 0; //TODO cheat code remove it
         this.gameOver = false;
         this.socket = socket;
         this.initializeBoard(options.height, options.width);
@@ -88,8 +89,10 @@ module.exports = class TetrisPlayer {
     //FIXME 
     checkGameRules(onLose) {
         for (let j = 0; j < this.grid[0].length; j++) {
-            if (this.grid[0][j] && this.grid[0][j].isFixed)
-                return onLose();
+            if (this.grid[0][j] && this.grid[0][j].isFixed) {
+                this.gameOver = true;
+                return onLose(this);
+            }
         }
     }
 
@@ -114,8 +117,6 @@ module.exports = class TetrisPlayer {
             for (let j = 0; j < newTetromino[i].length; j++) {
                 if (this.grid[i][j] && this.grid[i][j].isFixed) {
                     newPosition.y = newPosition.y - newTetromino.length + i;
-                    console.log('tetromino = ', newTetromino);
-                    console.log("newPosition = ", newPosition);
                     return newPosition
                 }
             }

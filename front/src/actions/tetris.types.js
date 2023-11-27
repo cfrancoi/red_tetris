@@ -21,6 +21,7 @@ export const SET_ROOM = `${name}/setRoomId`;
 
 export const ADD_PLAYER_TO_ROOM = `${name}/addPlayerToRoom`;
 export const CHANGE_GAME_STATE = `${name}/changeGameState`;
+export const SET_GAME_RESULT = `${name}/setGameResult`;
 
 
 
