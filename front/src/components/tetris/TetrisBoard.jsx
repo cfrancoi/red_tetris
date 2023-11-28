@@ -67,7 +67,7 @@ export default function TetrisBoard({ playerId, isControlled }) {
         );
       })}
 
-      {`score: ${tetris.score} playerId: ${playerId} isOpponent:${!isControlled}`}
+      {`score: ${tetris?.score} playerId: ${playerId} isOpponent:${!isControlled}`}
     </div>
   );
 }
