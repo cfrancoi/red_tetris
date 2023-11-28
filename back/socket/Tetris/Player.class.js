@@ -16,8 +16,7 @@ module.exports = class TetrisPlayer {
             position: { x: 0, y: 0 },
             grid: L_TETROMINO,
         }; // The currently falling Tetrimino
-        this.rank = 1; //TODO cheat code remove it
-        this.score = 0; //TODO cheat code remove it
+        this.score = 0;
         this.gameOver = false;
         this.socket = socket;
         this.initializeBoard(options.height, options.width);
@@ -230,7 +229,6 @@ module.exports = class TetrisPlayer {
                 this.updateGameGrid(this.grid, this.currentPiece, this.currentPiece.grid, isFixed);
 
                 return { ...this.currentPiece, isFixed: isFixed };
-
             }
 
         }

@@ -16,10 +16,8 @@ module.exports = class TetrisGame {
 
             this.nextRank = +this.nextRank - 1;
 
-            console.log(`${this.nextRank} ${this.nextRank - 1}`)
-
             if (this.isEnd()) {
-                //TODO set rank to last player !!!!!!!!
+                this.setRankToLastsPlayers();
                 this.kill();
                 this.events.onFinish(this.getResult());
             }
@@ -157,6 +155,13 @@ module.exports = class TetrisGame {
         return false
     }
 
+    setRankToLastsPlayers() {
+        this.players.forEach((p, key) => {
+            if (!p.rank) {
+                p.rank = 1;
+            }
+        });
+    }
 
     getResult() {
         let result = [];
