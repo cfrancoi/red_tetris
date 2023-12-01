@@ -2,7 +2,6 @@ const { estimatedDocumentCount } = require("../../models/role.model");
 
 const TetrisGame = require("../game/TetrisGame.class");
 
-
 const eventEmitter = require('../../events/GlobalEventEmitter');
 
 const tetrisEvent = require('../events/event.constant');
@@ -24,10 +23,6 @@ module.exports = class Room {
     id;
     status;
     players = [];
-    options = {
-        height: defaultHeight,
-        width: defaultWidth
-    }
     game = null;
 
     constructor(id, player) {
@@ -88,7 +83,6 @@ module.exports = class Room {
             return false
         }
 
-        return false;
 
         this.game = new TetrisGame(this.id, this.players, io, this.options);
 
@@ -101,6 +95,9 @@ module.exports = class Room {
         this.status = EStatus.IN_PROGRESS;
 
         this.game.start();
+
+
+        return true;
 
     }
 

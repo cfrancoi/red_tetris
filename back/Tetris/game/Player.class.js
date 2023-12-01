@@ -10,7 +10,7 @@ module.exports = class TetrisPlayer {
     tetrominos = [];
 
     constructor(socket, options) {
-        this.freezeLineIdx = options.height;
+        this.freezeLineIdx = options.board.height;
         this.grid = []; // Represents the game board (e.g., a 2D array)
         this.currentPiece = {
             position: { x: 0, y: 0 },
@@ -19,7 +19,7 @@ module.exports = class TetrisPlayer {
         this.score = 0;
         this.gameOver = false;
         this.socket = socket;
-        this.initializeBoard(options.height, options.width);
+        this.initializeBoard(options.board.height, options.board.width);
     }
 
     initializeBoard(rows, columns) {
@@ -48,14 +48,11 @@ module.exports = class TetrisPlayer {
         this.grid[0] = Array(this.grid[0].length).fill({ type: '', isFixed: false });
     }
 
-    freezeNextLine(onFreezeLine, nbLine) {
+    freezeNextLines(nbLine) {
         this.freezeLineIdx -= nbLine;
 
         this.freezeline(this.freezeLineIdx, nbLine);
-
-        onFreezeLine(this.socket.id, nbLine, this.freezeLineIdx);
     }
-
 
     freezeline(index, nbLine) {
         for (let i = 0; i < index; i++)

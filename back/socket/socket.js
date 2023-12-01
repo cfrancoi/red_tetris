@@ -3,6 +3,7 @@ const http = require('http');
 const RoomManager = require('../Tetris/room/RoomManager.class');
 const jwt = require("jsonwebtoken");
 const config = require("../config/auth.config.js");
+const globalEventEmitter = require('../events/GlobalEventEmitter');
 
 
 module.exports = function (server) {
@@ -10,6 +11,8 @@ module.exports = function (server) {
   const io = new Server(server, { path: "/api/socket.io" });
 
   const roomManager = new RoomManager();
+
+  require('../Tetris/events/event.listerner')(globalEventEmitter, roomManager, io);
 
   io.on('connection', (socket) => {
     console.log('a user connected');
