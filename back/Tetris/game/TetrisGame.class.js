@@ -1,3 +1,4 @@
+const defaultOptions = require('./defaultOptions.js');
 const { get_tetrominos } = require('./generator_tetrominos.js');
 
 const TetrisPlayer = require('./Player.class.js');
@@ -6,7 +7,9 @@ module.exports = class TetrisGame {
 
     /** @type {number} */ id;
     /** @type {Map<string, player>} */ players;
+
     tetrominos = [];
+
 
     events = {
         onGameOver: (player) => {
@@ -22,21 +25,24 @@ module.exports = class TetrisGame {
                 this.events.onFinish(this.getResult());
             }
         },
-        onFreezeLine: (id, nbLine,freezeLineIdx) => this.io.to(this.id).emit('freezeLine', { playerId: id, nbLine, freezeLineIdx }),
+        onFreezeLine: (id, nbLine, freezeLineIdx) => this.io.to(this.id).emit('freezeLine', { playerId: id, nbLine, freezeLineIdx }),
         onBreakLines: (id, listBreakline) => {
+            console.log(`[GAME](info): break lines: [${listBreakline}]`)
             if (listBreakline?.length) {
                 this.io.to(this.id).emit('breakLine', { playerId: id, listBreakline })
-                this.players.forEach((player, key) => {
-                    if (key !== id)
-                        player.freezeNextLine(this.events.onFreezeLine, listBreakline.length - 1);
-                })
+                if (this.options.freeze === true) {
+                    this.players.forEach((player, key) => {
+                        if (key !== id)
+                            this.freezeLines(key, (listBreakline.length - 1));
+                    })
+                }
             }
 
         },
         onNewPiece: (id, piece) => {
 
-        //    console.log(piece);
-        //  console.log(id);
+            //    console.log(piece);
+            //  console.log(id);
 
             this.io.to(id).emit('newPiece', {
                 playerId: id,
@@ -63,8 +69,10 @@ module.exports = class TetrisGame {
         this.io = io;
         this.players = new Map(); // Map to store player instances
 
+        this.options = { ...defaultOptions, ...options }
+
         players.forEach(player => {
-            this.players.set(player.id, new TetrisPlayer(player, options));
+            this.players.set(player.id, new TetrisPlayer(player, this.options));
         });
         this.nextRank = this.players.size;
     }
@@ -101,7 +109,7 @@ module.exports = class TetrisGame {
             player.spawnNewPiece(() => { this.update_sequence() },
                 this.events.onNewPiece)
         });
-        this.Interval = setInterval(() => { this.gameLoop(this.io, this.players) }, 750);
+        this.Interval = setInterval(() => { this.gameLoop(this.io, this.players) }, this.options.gameDelay);
     }
 
     /**
@@ -119,7 +127,7 @@ module.exports = class TetrisGame {
     }
 
     movePlayer(playerId, direction, i) {
-        const player = this.players.get(playerId)
+        const player = this.players.get(playerId);
         const piece = player?.move(direction);
 
         if (piece) {
@@ -137,6 +145,16 @@ module.exports = class TetrisGame {
             }
         }
 
+    }
+
+    freezeLines(playerId, nbLinesToFreeze) {
+        const player = this.players.get(playerId);
+        player.freezeNextLines(nbLinesToFreeze);
+
+        //TODO get list of index freeze instead it's more clear than to values
+        this.events.onFreezeLine(playerId, nbLinesToFreeze, player.freezeLineIdx);
+
+        //TRIGGER events
     }
 
     isEnd() {
