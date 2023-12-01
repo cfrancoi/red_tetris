@@ -1,6 +1,5 @@
 const { Socket } = require("socket.io");
-const RoomManager = require("./room/RoomManager.class");
-
+const RoomManager = require("../Tetris/room/RoomManager.class");
 
 /**
  * @param {RoomManager} roomManager
