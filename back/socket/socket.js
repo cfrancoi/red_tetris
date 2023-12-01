@@ -1,6 +1,6 @@
 const { Server } = require("socket.io");
 const http = require('http');
-const RoomManager = require('./room/RoomManager.class');
+const RoomManager = require('../Tetris/room/RoomManager.class');
 const jwt = require("jsonwebtoken");
 const config = require("../config/auth.config.js");
 

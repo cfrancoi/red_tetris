@@ -1,6 +1,6 @@
 const { get_tetrominos } = require('./generator_tetrominos.js');
 
-const TetrisPlayer = require('./Player.class');
+const TetrisPlayer = require('./Player.class.js');
 
 module.exports = class TetrisGame {
 
@@ -44,6 +44,9 @@ module.exports = class TetrisGame {
                 tetromino: piece.grid,
                 nextPiece: piece.nextPiece
             })
+        },
+        onError: (err) => {
+            console.err(`[GAME](err): ${err.cause}`)
         }
     }
 

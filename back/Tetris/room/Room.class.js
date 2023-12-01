@@ -1,6 +1,12 @@
 const { estimatedDocumentCount } = require("../../models/role.model");
 
-const TetrisGame = require("../Tetris/TetrisGame.class");
+const TetrisGame = require("../game/TetrisGame.class");
+
+
+const eventEmitter = require('../../events/GlobalEventEmitter');
+
+const tetrisEvent = require('../events/event.constant');
+
 
 const EStatus = {
     NOT_STARTED: 0,
@@ -44,45 +50,58 @@ module.exports = class Room {
         return (!(this.players) || this.players.length === 0)
     }
 
-    toJSON(id) {
+    /**
+     * 
+     * @param {any | null | undefined} idToCheck - add a id if you wanna detect 'me' in player list.
+     * @returns 
+     */
+    toJSON(idToCheck) {
         let playersToSend = [];
 
-        this.players.forEach(player => { return playersToSend.push({ id: player.id, me: (id && player.id === id) }) });
+        this.players.forEach(player => { return playersToSend.push({ id: player.id, me: (idToCheck && player.id === idToCheck) }) });
 
         return {
             id: this.id,
             status: this.status,
-            players: playersToSend
+            players: playersToSend,
+            isOwner: this.isOwner(this)
         }
     }
 
     isOwner(player) {
         return (player === this.players[0]);
-
     }
 
     start(player, io, onEnd) {
 
-        //TODO isowner
+        // NOT_OWNER
+        if (!this.isOwner(player)) {
+            eventEmitter.emit(tetrisEvent.ERROR, new Error('You must be an owner'));
 
-        if (this.status === EStatus.NOT_STARTED) {
-
-
-            this.game = new TetrisGame(this.id, this.players, io, this.options);
-
-            this.game.events = {
-                ...this.game.events, onFinish: (result) => {
-                    this.status = EStatus.GAME_OVER;
-                    onEnd(this.id, this, result);
-                }
-            }
-            this.status = EStatus.IN_PROGRESS;
-
-            this.game.start();
-
-            return true;
+            return false
         }
+
+        // ROOM_BAD_STATUS
+        if (this.status !== EStatus.NOT_STARTED) {
+
+            eventEmitter.emit(tetrisEvent.ERROR, new Error(`Bad status ${this.status}, expected ${EStatus.NOT_STARTED}`));
+            return false
+        }
+
         return false;
+
+        this.game = new TetrisGame(this.id, this.players, io, this.options);
+
+        this.game.events = {
+            ...this.game.events, onFinish: (result) => {
+                this.status = EStatus.GAME_OVER;
+                onEnd(this.id, this, result);
+            }
+        }
+        this.status = EStatus.IN_PROGRESS;
+
+        this.game.start();
+
     }
 
     leave(id) {
