@@ -85,6 +85,8 @@ module.exports = class TetrisPlayer {
 
         }
     }
+    
+
     //FIXME 
     checkGameRules(onLose) {
         for (let j = 0; j < this.grid[0].length; j++) {
@@ -234,6 +236,7 @@ module.exports = class TetrisPlayer {
         }
     }
 
+
     // Drop the current Tetrimino down
     drop() {
         return this.move('drop');
@@ -349,4 +352,16 @@ module.exports = class TetrisPlayer {
         return shadowBoard;
     }
 
+
+    updateScore(listBreakline)
+    {
+        if(listBreakline.length === 4)
+            this.score += 1200; //bestscore
+        if(listBreakline.length === 3)
+            this.score += 300;//highscore
+        if(listBreakline.length === 2)
+            this.score += 100;//middlescore
+        if(listBreakline.length === 1)
+            this.score += 40;//littlescore
+    }
 }
