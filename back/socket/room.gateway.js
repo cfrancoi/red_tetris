@@ -43,10 +43,10 @@ module.exports = function (socket, roomManager, io) {
       io.to(roomId).emit('roomStarted');
     },
     onJoin: (roomId, player, room) => {
-      player.join(room.id);
       player.data.tetrisRoomId = room.id;
       player.to(room.id).emit('roomJoined', room.toJSON())
-      player.emit('roomJoined', room.toJSON(socket.id))
+      player.join(room.id);
+      player.emit('roomJoined', room.toJSON(player.id))
     },
     onRestartRoom: (roomId, player, room) => {
       console.log(`room ${roomId} restarted by ${player.id}`);
