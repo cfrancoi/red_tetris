@@ -305,7 +305,6 @@ const tetrisSlice = createSlice({
       let player = getPlayer(state.players, playerId);
 
       lines.forEach(line => {
-        console.log("line = ", line);
         player.grid[line].fill({})
       })
 
@@ -319,18 +318,22 @@ const tetrisSlice = createSlice({
       const lines = action.payload.listBreakline;
 
       lines.forEach(line => {
-        console.log("line = ", line);
         downOneLine(line, player.grid);
       })
     },
     freezeLine: (state, action) => {
-      const line = action.payload.index;
+      const nbLine = action.payload.nbLine;
       const playerId = action.payload.playerId;
+      const freezeLineIdx = action.payload.freezeLineIdx;
 
       let player = getPlayer(state.players, playerId);
+      if (nbLine) {
+        for (let i = 0; i < freezeLineIdx; i++)
+          player.grid[i] = player.grid[i + nbLine];
+        for (let i = freezeLineIdx; i < freezeLineIdx + nbLine; i++)
+          player.grid[i] = new Array(player.grid[i].length).fill({ type: 'f', fixed: true });
 
-      console.log("line = ", line);
-      player.grid[line].fill({ type: 'f', fixed: true });
+      }
     },
     printShadowBoard: (state, action) => {
       const shadowboard = action.payload.shadowboard;

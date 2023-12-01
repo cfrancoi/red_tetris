@@ -22,21 +22,21 @@ module.exports = class TetrisGame {
                 this.events.onFinish(this.getResult());
             }
         },
-        onFreezeLine: (id, index) => this.io.to(this.id).emit('freezeLine', { playerId: id, index }),
+        onFreezeLine: (id, nbLine,freezeLineIdx) => this.io.to(this.id).emit('freezeLine', { playerId: id, nbLine, freezeLineIdx }),
         onBreakLines: (id, listBreakline) => {
             if (listBreakline?.length) {
                 this.io.to(this.id).emit('breakLine', { playerId: id, listBreakline })
                 this.players.forEach((player, key) => {
                     if (key !== id)
-                        player.freezeNextLine(this.events.onFreezeLine);
+                        player.freezeNextLine(this.events.onFreezeLine, listBreakline.length - 1);
                 })
             }
 
         },
         onNewPiece: (id, piece) => {
 
-            console.log(piece);
-            console.log(id);
+        //    console.log(piece);
+        //  console.log(id);
 
             this.io.to(id).emit('newPiece', {
                 playerId: id,
