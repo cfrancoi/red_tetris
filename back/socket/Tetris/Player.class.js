@@ -48,17 +48,21 @@ module.exports = class TetrisPlayer {
         this.grid[0] = Array(this.grid[0].length).fill({ type: '', isFixed: false });
     }
 
-    freezeNextLine(onFreezeLine) {
-        this.freezeLineIdx -= 1;
+    freezeNextLine(onFreezeLine, nbLine) {
+        this.freezeLineIdx -= nbLine;
 
-        this.freezeline(this.freezeLineIdx);
+        this.freezeline(this.freezeLineIdx, nbLine);
 
-        onFreezeLine(this.socket.id, this.freezeLineIdx);
+        onFreezeLine(this.socket.id, nbLine, this.freezeLineIdx);
     }
 
 
-    freezeline(index) {
-        this.grid[index].fill({ type: 'f', isFixed: true });
+    freezeline(index, nbLine) {
+        for (let i = 0; i < index; i++)
+            this.grid[i] = this.grid[i + nbLine];
+        for (let i = index; i < index + nbLine; i++) {
+            this.grid[i] = new Array(this.grid[i].length).fill({ type: 'f', isFixed: true });
+        }
     }
 
 
