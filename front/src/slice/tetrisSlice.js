@@ -263,7 +263,6 @@ const tetrisSlice = createSlice({
 
       toAdd = toAdd.filter(item1 => !state.players.some(item2 => item2.id === item1.id));
 
-
       toAdd.forEach(p => {
         p.grid = Array.from(Array(state.options.height), () => new Array(state.options.width).fill({}))
         p.currentPiece = null;
@@ -347,6 +346,16 @@ const tetrisSlice = createSlice({
     },
     setGameResult: (state, action) => {
       state.result = action.result;
+    },
+    changePseudo: (state, action) => {
+
+      const playerId = action.payload.playerId;
+
+      let player = getPlayer(state.players, playerId);
+
+      if (player) {
+        player.name = action.payload.name;
+      }
     }
   }
 

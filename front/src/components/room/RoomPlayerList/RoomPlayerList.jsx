@@ -6,7 +6,7 @@ export default function RoomPlayerList({ players }) {
             {players?.map((player) => {
                 if (player && player.id) {
                     return (
-                        <li key={player.id}>{player.id}</li>
+                        <li key={player.id}>{player.id}, {player.name}</li>
                     )
                 }
             })}
