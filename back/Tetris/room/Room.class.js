@@ -53,7 +53,13 @@ module.exports = class Room {
     toJSON(idToCheck) {
         let playersToSend = [];
 
-        this.players.forEach(player => { return playersToSend.push({ id: player.id, me: (idToCheck && player.id === idToCheck) }) });
+        this.players.forEach(player => {
+            return playersToSend.push({
+                id: player.id,
+                name: (player?.data?.pseudo) ? player?.data?.pseudo : 'guest',
+                me: (idToCheck && player.id === idToCheck)
+            })
+        });
 
         return {
             id: this.id,

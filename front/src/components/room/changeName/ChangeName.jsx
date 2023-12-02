@@ -2,56 +2,55 @@ import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { useSocket } from "../../../context/SocketContext";
 import { useCallback, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { ADD_PLAYER_TO_ROOM, CHANGE_GAME_STATE, SET_ROOM } from "../../../actions/tetris.types";
+import { CHANGE_PSEUDO } from "../../../actions/tetris.types";
 
-const CreateRoom = () => {
+const ChangeName = () => {
     const { register, handleSubmit } = useForm();
     const { socket } = useSocket();
     const dispatch = useDispatch();
-    const navigate = useNavigate();
 
     const submitForm = useCallback((data) => {
         if (socket) {
-            socket.emit('requestRoom', data.roomId)
+            socket.emit('change_pseudo', data.name)
         }
     }, [socket])
 
-    const joinRoom = useCallback((payload) => {
-        dispatch({ type: SET_ROOM, id: payload.id });
-        dispatch({ type: CHANGE_GAME_STATE, gameState: payload.status });
-        dispatch({ type: ADD_PLAYER_TO_ROOM, players: payload.players });
-        navigate(`rooms/${payload.id}`);
-    }, [dispatch, navigate]);
+    const changeName = useCallback((payload) => {
+        console.log('[change_pseudo]');
+
+        dispatch({type: CHANGE_PSEUDO, payload});
+
+        console.log(payload)
+      
+    }, [dispatch]);
 
     useEffect(() => {
         if (socket) {
-            socket.on('roomJoined', joinRoom);
+            socket.on('change_pseudo', changeName);
 
             return () => {
-                socket.off('roomJoined');
+                socket.off('change_pseudo');
             }
         }
-    }, [socket, joinRoom]);
+    }, [socket, changeName]);
 
     return (
         <div>
             <form onSubmit={handleSubmit(submitForm)}>
                 <div className='form-group'>
-                    <label htmlFor='text'>room name to join/create</label>
+                    <label htmlFor='text'>new name</label>
                     <input
                         type='text'
                         className='form-input'
-                        {...register('roomId')}
+                        {...register('name')}
                         required
                     />
                 </div>
                 <button type='submit' className='button'>
-                    create room
+                    change_pseudo
                 </button>
             </form>
-        </ div>
+        </div>
     )
 }
-
-export default CreateRoom;
+export default ChangeName;

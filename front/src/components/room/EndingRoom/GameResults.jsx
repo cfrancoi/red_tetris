@@ -6,7 +6,7 @@ function GameResults({result}) {
             {result.map(p => {
                 return  (
                 <>
-                {`id: ${p.playerId} , rank: #${p.rank}, score: ${p.score}`}
+                {`id: ${p.playerId}, name:${p.name} , rank: #${p.rank}, score: ${p.score}`}
                 <br />
                 </>
                 )

@@ -2,7 +2,7 @@
 import { useLocation, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import RoomPlayerList from "../../../components/room/RoomPlayerList/RoomPlayerList";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSocket } from "../../../context/SocketContext";
 import { ADD_PLAYER_TO_ROOM, CHANGE_GAME_STATE, SET_ROOM } from "../../../actions/tetris.types";
 import StartRoomComponent from "../../../components/room/startRoom/StartRoomComponent";
@@ -13,6 +13,7 @@ import { routes } from "../../../routes/route.constant";
 import RoomStatus from "../../../components/room/roomStatus/RoomStatus";
 import EndingRoom from "../../../components/room/EndingRoom/EndingRoom";
 import GameEvent from "../../../components/tetris/GameEvent";
+import ChangeName from "../../../components/room/changeName/ChangeName";
 
 
 const toPrint = [
@@ -26,6 +27,7 @@ export default function Room() {
 
     const { roomId } = useParams();
     const { socket } = useSocket();
+    const [nameIsSet, setNameIsSet] = useState(false);
     const search = new URLSearchParams(useLocation().search);
     const dispatch = useDispatch();
     const tetris = useSelector(state => state.tetris);
@@ -39,6 +41,16 @@ export default function Room() {
     const leftRoom = useCallback((payload) => {
         dispatch({ type: 'tetris/removePlayer', id: payload.playerId });
     }, [dispatch]);
+
+
+    useEffect(() => {
+        if (socket && search.get('name') && !nameIsSet) {
+            socket.emit('change_pseudo', search.get('name'))
+            setNameIsSet(true);
+            return () => {
+            }
+        }
+    }, [nameIsSet, search, socket]);
 
     useEffect(() => {
         if (socket && !tetris.roomId) {
@@ -65,6 +77,7 @@ export default function Room() {
             <Navbar routes={routes} />
             <RoomStatus />
             {roomId} {search.get('name')}
+            <ChangeName />
 
             <div>{tetris.roomId}</div>
             <RoomPlayerList players={tetris.players}></RoomPlayerList>

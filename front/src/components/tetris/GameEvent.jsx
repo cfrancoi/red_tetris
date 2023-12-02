@@ -52,9 +52,6 @@ export default function GameEvent() {
             })
         })
         return () => {
-            socket?.off('moveDown');
-            socket?.off('moveRight');
-            socket?.off('moveLeft');
             socket?.off('updatePiece');
             socket?.off('newPiece');
             socket?.off('breakLine');
