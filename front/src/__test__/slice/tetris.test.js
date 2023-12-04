@@ -1,3 +1,4 @@
+import { defaultHeight, defaultWidth } from "../../slice/tetrisSlice";
 import { store } from "../../store";
 
 
@@ -14,16 +15,7 @@ describe("redux tetris slice tests", () => {
                 height: defaultHeight,
                 width: defaultWidth
             },
-            players: [
-                {
-                    score: 0,
-                    currentPiece: {
-                        position: { x: 0, y: 0 },
-                        grid: null,
-                    },
-                    grid: Array.from(Array(defaultHeight), () => new Array(defaultWidth).fill({}))
-                },
-            ]
+            players: []
         });
     })
 })

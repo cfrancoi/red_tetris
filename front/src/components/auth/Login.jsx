@@ -13,20 +13,23 @@ const Login = ({ onLogin }) => {
         <div>
             <form onSubmit={handleSubmit(submitForm)}>
                 <div className='form-group'>
-                    <label htmlFor='text'>Login</label>
-                    <input
-                        type='text'
-                        className='form-input'
-                        {...register('login')}
-                        required
-                    />
+                    <label htmlFor='Login'>Login
+                        <input
+                            type='text'
+                            className='form-input'
+                            {...register('login') }
+                            aria-label='Login'
+                            required
+                        />
+                    </label>
                 </div>
                 <div className='form-group'>
-                    <label htmlFor='password'>Password</label>
+                    <label htmlFor='Password'>Password</label>
                     <input
                         type='password'
                         className='form-input'
                         {...register('password')}
+                        aria-label='Password'
                         required
                     />
                 </div>

@@ -1,23 +1,13 @@
-// import { render, screen } from '@testing-library/react'
-// import '@testing-library/jest-dom'
-// import LoginScreen from '../pages/login/Login'
-// import { Provider } from 'react-redux'
-// import { store } from '../store'
-// import WebSocketProvider from '../context/SocketContext'
-// import { BrowserRouter } from 'react-router-dom'
+import customRender, { defaultWebSocketProviderProps } from './test-utils'
+import Login from '../components/auth/Login'
 
-// test('loads and displays login', async () => {
-//   // ARRANGE
-//   render(
-//     <BrowserRouter>
-//       <Provider store={store}>
-//         <WebSocketProvider>
-//           <LoginScreen />
-//         </ WebSocketProvider>
-//       </ Provider>
-//     </ BrowserRouter>)
+const onLogin = () => {}
 
-//   // ASSERT
-//   // expect(screen.getByTestId('login-button')).toBeVisible()
-//   // expect(screen.getByTestId('login-button')).toHaveTextContent('Login')
-// })
+test('loads and displays Login', async () => {
+    // ARRANGE
+    const screen = customRender(<Login onLogin={onLogin}/>, {webSocketProviderProps: defaultWebSocketProviderProps})
+
+    // ASSERT
+    expect(screen.getByLabelText('Login'))
+    expect(screen.getByLabelText('Password'))
+})

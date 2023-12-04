@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const defaultHeight = 20;
-const defaultWidth = 10;
+export const defaultHeight = 20;
+export const defaultWidth = 10;
 
 
 export const ERoomStatus = {

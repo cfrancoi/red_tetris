@@ -6,5 +6,4 @@ import App from "../App"
 test('full app rendering/navigating', async () => {
     render(<App />);
     
-    screen.debug();
   })
