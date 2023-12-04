@@ -1,6 +1,6 @@
 //TODO name replace with translate
 
-const offlineRoutes = [
+export const offlineRoutes = [
     {
         href: "/scoreboard",
         name: "scoreboard",
@@ -9,7 +9,7 @@ const offlineRoutes = [
     },
 ]
 
-const onlineRoutes = [
+export const onlineRoutes = [
     {
         href: "/profile",
         name: "profile",
