@@ -1,4 +1,4 @@
-import { createSlice, current } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
 const defaultHeight = 20;
 const defaultWidth = 10;
@@ -14,22 +14,6 @@ export const ERoomStatus = {
 /**
  * * * UTILS * * *
  */
-
-function rotateMatrix(matrix) {
-  const rows = matrix.length;
-  const cols = matrix[0].length;
-  const rotatedMatrix = [];
-
-  for (let i = 0; i < cols; i++) {
-    const newRow = [];
-    for (let j = rows - 1; j >= 0; j--) {
-      newRow.push(matrix[j][i]);
-    }
-    rotatedMatrix.push(newRow);
-  }
-
-  return rotatedMatrix;
-}
 
 function updateGameGrid(gameGrid, currentPiece, newPieceGrid, fixed = false) {
   if (currentPiece.position) {
@@ -70,9 +54,6 @@ function updateGameGrid(gameGrid, currentPiece, newPieceGrid, fixed = false) {
         }
       });
     });
-
-
-
   }
 }
 
@@ -148,72 +129,6 @@ const tetrisSlice = createSlice({
     ]
   },
   reducers: {
-    /**
-     * Si aucun playerIndex alors pour tout les joueurs. 
-     */
-    moveDown: (state, action) => {
-      console.log(action);
-      if (action.payload.playerId !== undefined && action.payload.playerId !== null) {
-        let player = getPlayer(state.players, action.payload.playerId);
-        if (canMoveDown(player.grid, player.currentPiece)) {
-
-          player.currentPiece.position = { x: player.currentPiece.position.x, y: player.currentPiece.position.y + 1 };
-
-          updateGameGrid(player.grid, player.currentPiece, player.currentPiece.grid, false);
-
-        }
-      }
-      else {
-        state.players.forEach(player => {
-          if (canMoveDown(player.grid, player.currentPiece)) {
-
-            player.currentPiece.position = { x: player.currentPiece.position.x, y: player.currentPiece.position.y + 1 };
-
-            updateGameGrid(player.grid, player.currentPiece, player.currentPiece.grid, false);
-          }
-        })
-      }
-    },
-    moveLeft: (state, action) => {
-      if (action.payload.playerIndex !== undefined || action.payload.playerIndex !== null) {
-        let player = getPlayer(state.players, action.payload.playerId);
-        if (canMoveLeft(player.grid, player.currentPiece)) {
-
-          player.currentPiece.position = { x: player.currentPiece.position.x - 1, y: player.currentPiece.position.y };
-
-          updateGameGrid(player.grid, player.currentPiece, player.currentPiece.grid, false);
-
-          console.log(current(player.currentPiece));
-        }
-      }
-    },
-    moveRight: (state, action) => {
-      if (action.payload.playerIndex !== undefined || action.payload.playerIndex !== null) {
-        let player = getPlayer(state.players, action.payload.playerId);
-        if (canMoveRight(player.grid, player.currentPiece)) {
-
-          player.currentPiece.position = { x: player.currentPiece.position.x + 1, y: player.currentPiece.position.y };
-
-          updateGameGrid(player.grid, player.currentPiece, player.currentPiece.grid, false);
-
-          console.log(current(player.currentPiece));
-        }
-      }
-
-    },
-    rotatePiece: (state, action) => {
-      if (action.payload.playerIndex !== undefined || action.payload.playerIndex !== null) {
-        let player = getPlayer(state.players, action.payload.playerId);
-        if (player.currentPiece) {
-          const { grid } = player.currentPiece;
-          const newGrid = rotateMatrix(grid); // Appel à une fonction de rotation
-
-          player.currentPiece.grid = newGrid;
-
-          updateGameGrid(player.grid, player.currentPiece, newGrid, false);
-        }
-      }
-    },
     updatePiece: (state, action) => {
       if (action.payload.playerId !== undefined && action.payload.playerId !== null) {
         let player = getPlayer(state.players, action.payload.playerId);
