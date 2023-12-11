@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { getPlayer } from './utils/tetris.utils';
 
 export const defaultHeight = 20;
 export const defaultWidth = 10;
@@ -57,7 +58,7 @@ function updateGameGrid(gameGrid, currentPiece, newPieceGrid, fixed = false) {
   }
 }
 
-function printShadowBoard(grid, shadowBoardGrid) {
+function TprintShadowBoard(grid, shadowBoardGrid) {
   grid.forEach((line, lineIndex) => {
 
     line.forEach((cell, cellIndex) => {
@@ -111,8 +112,20 @@ function previewPieceDrop(gameGrid, currentPiece) {
   return target;
 }
 
-function getPlayer(players, id) {
-  return players.find(p => p.id === id);
+function downOneLine(index, grid) {
+  // Vérifier si l'index de la ligne est valide
+  if (index < 0 || index >= grid.length) {
+    console.error('Index de ligne invalide.');
+    return;
+  }
+
+  // Descendre chaque élément au-dessus de la ligne spécifiée
+
+  for (let i = index - 1; i >= 0; i--) {
+    grid[i + 1] = grid[i];
+  }
+
+  grid[0] = Array(grid[0].length).fill({ type: '', fixed: false });
 }
 
 const tetrisSlice = createSlice({
@@ -132,7 +145,9 @@ const tetrisSlice = createSlice({
     updatePiece: (state, action) => {
       if (action.payload.playerId !== undefined && action.payload.playerId !== null) {
         let player = getPlayer(state.players, action.payload.playerId);
-
+        if (!player) {
+          return;
+        }
         player.currentPiece = action.payload.piece;
         updateGameGrid(player.grid, player.currentPiece, action.payload.piece.grid, action.payload.fixed);
       }
@@ -174,13 +189,12 @@ const tetrisSlice = createSlice({
       return ({ ...state, roomId: action.id })
     },
     addPlayerToRoom: (state, action) => {
-      let toAdd = action.players.filter(player => player || player?.id);
+      let toAdd = action.payload.players.filter(player => player || player?.id);
 
       toAdd = toAdd.filter(item1 => !state.players.some(item2 => item2.id === item1.id));
 
       toAdd.forEach(p => {
         p.grid = Array.from(Array(state.options.height), () => new Array(state.options.width).fill({}))
-        p.currentPiece = null;
         p.score = 0;
         p.currentPiece = {
           position: { x: 0, y: 0 },
@@ -256,7 +270,7 @@ const tetrisSlice = createSlice({
       let player = getPlayer(state.players, playerId);
 
 
-      printShadowBoard(player.grid, shadowboard);
+      TprintShadowBoard(player.grid, shadowboard);
 
     },
     setGameResult: (state, action) => {
@@ -276,20 +290,23 @@ const tetrisSlice = createSlice({
 
 })
 
+export const {
+  updatePiece,
+  blockPiece,
+  newPiece,
+  addScore,
+  setRoomId,
+  addPlayerToRoom,
+  removePlayer,
+  setGameResult,
+  changeGameState,
+  reset,
+  resetGrid,
+  breakLine,
+  freezeLine,
+  printShadowBoard,
+  changePseudo
+} = tetrisSlice.actions;
+
 export default tetrisSlice;
 
-function downOneLine(index, grid) {
-  // Vérifier si l'index de la ligne est valide
-  if (index < 0 || index >= grid.length) {
-    console.error('Index de ligne invalide.');
-    return;
-  }
-
-  // Descendre chaque élément au-dessus de la ligne spécifiée
-
-  for (let i = index - 1; i >= 0; i--) {
-    grid[i + 1] = grid[i];
-  }
-
-  grid[0] = Array(grid[0].length).fill({ type: '', fixed: false });
-}
