@@ -8,7 +8,6 @@ module.exports = function (socket, roomManager, io) {
         }
     });
 
-    //TODO impl.
     socket.on('moveLeft', (gameId) => {
         const game = roomManager.getGameById(gameId);
 
@@ -17,7 +16,6 @@ module.exports = function (socket, roomManager, io) {
         }
     });
 
-    //TODO impl.
     socket.on('moveRight', (gameId) => {
         const game = roomManager.getGameById(gameId);
 
@@ -26,7 +24,6 @@ module.exports = function (socket, roomManager, io) {
         }
     });
 
-    //TODO impl.
     socket.on('rotatePiece', (gameId) => {
         const game = roomManager.getGameById(gameId);
 

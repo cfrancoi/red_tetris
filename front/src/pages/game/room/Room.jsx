@@ -4,9 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import RoomPlayerList from "../../../components/room/RoomPlayerList/RoomPlayerList";
 import { useCallback, useEffect, useState } from "react";
 import { useSocket } from "../../../context/SocketContext";
-import { ADD_PLAYER_TO_ROOM, CHANGE_GAME_STATE, SET_ROOM } from "../../../actions/tetris.types";
+import { CHANGE_GAME_STATE, SET_ROOM } from "../../../actions/tetris.types";
 import StartRoomComponent from "../../../components/room/startRoom/StartRoomComponent";
-import { ERoomStatus } from "../../../slice/tetrisSlice";
+import { ERoomStatus, addPlayerToRoom } from "../../../slice/tetrisSlice";
 import Tetris from "../tetris/Tetris";
 import Navbar from "../../../components/layout/Navbar";
 import { routes } from "../../../routes/route.constant";
@@ -35,7 +35,7 @@ export default function Room() {
     const joinRoom = useCallback((payload) => {
         dispatch({ type: SET_ROOM, id: payload.id });
         dispatch({ type: CHANGE_GAME_STATE, gameState: payload.status });
-        dispatch({ type: ADD_PLAYER_TO_ROOM, players: payload.players });
+        dispatch(addPlayerToRoom(payload));
     }, [dispatch]);
 
     const leftRoom = useCallback((payload) => {

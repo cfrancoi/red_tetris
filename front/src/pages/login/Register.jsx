@@ -2,8 +2,6 @@ import { useForm } from 'react-hook-form'
 import { useDispatch } from 'react-redux'
 import { register as signup } from '../../actions/auth';
 
-//TODO transform to Login modal using mateiral UI
-//TODO move to component
 const Register = () => {
     const { register, handleSubmit } = useForm()
 

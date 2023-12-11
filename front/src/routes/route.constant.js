@@ -1,5 +1,3 @@
-//TODO name replace with translate
-
 export const offlineRoutes = [
     {
         href: "/scoreboard",
