@@ -10,20 +10,19 @@ export const ERoomStatus = {
   GAME_OVER: 3,
 };
 
+export const initialState = {
+  roomId: null,
+  gameState: null,
+  players: [],
+  options: {
+    height: defaultHeight,
+    width: defaultWidth
+  }
+}
 
 const tetrisSlice = createSlice({
   name: "tetris",
-  initialState: {
-    roomId: null,
-    gameState: null,
-    options: {
-      height: defaultHeight,
-      width: defaultWidth
-    },
-    players: [
-
-    ]
-  },
+  initialState: initialState,
   reducers: {
     updatePiece: (state, action) => {
       if (action.payload.playerId !== undefined && action.payload.playerId !== null) {
@@ -72,7 +71,6 @@ const tetrisSlice = createSlice({
       return ({ ...state, roomId: action.payload.id })
     },
     addPlayerToRoom: (state, action) => {
-      console.log(action.payload)
       let toAdd = action.payload.players.filter(player => player || player?.id);
 
       toAdd = toAdd.filter(item1 => !state.players.some(item2 => item2.id === item1.id));
@@ -97,13 +95,7 @@ const tetrisSlice = createSlice({
       state.gameState = action.payload.gameState;
     },
     reset: () => {
-      return {
-        players: [],
-        options: {
-          height: defaultHeight,
-          width: defaultWidth
-        }
-      };
+      return initialState;
     },
     resetGrid: (state) => {
       state.players?.forEach(p => p.grid = Array.from(Array(state.options.height), () => new Array(state.options.width).fill({}))

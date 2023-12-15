@@ -1,4 +1,4 @@
-import { defaultHeight, defaultWidth } from "../../slice/tetrisSlice";
+import { initialState } from "../../slice/tetrisSlice";
 import { store } from "../../store";
 
 
@@ -8,14 +8,6 @@ describe("redux tetris slice tests", () => {
     it("should init with ", () => {
         const state = store.getState().tetris;
 
-        expect(state).toEqual({
-            roomId: null,
-            gameState: null,
-            options: {
-                height: defaultHeight,
-                width: defaultWidth
-            },
-            players: []
-        });
+        expect(state).toEqual(initialState);
     })
 })
