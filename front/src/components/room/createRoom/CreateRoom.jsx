@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { useSocket } from "../../../context/SocketContext";
 import { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ADD_PLAYER_TO_ROOM, CHANGE_GAME_STATE, SET_ROOM } from "../../../actions/tetris.types";
+import { addPlayerToRoom, setGameState, setRoomId } from "../../../slice/tetrisSlice";
 
 const CreateRoom = () => {
     const { register, handleSubmit } = useForm();
@@ -18,9 +18,9 @@ const CreateRoom = () => {
     }, [socket])
 
     const joinRoom = useCallback((payload) => {
-        dispatch({ type: SET_ROOM, id: payload.id });
-        dispatch({ type: CHANGE_GAME_STATE, gameState: payload.status });
-        dispatch({ type: ADD_PLAYER_TO_ROOM, players: payload.players });
+        dispatch(setRoomId(payload));
+        dispatch(setGameState({ gameState: payload.status }));
+        dispatch(addPlayerToRoom(payload));
         navigate(`rooms/${payload.id}`);
     }, [dispatch, navigate]);
 
