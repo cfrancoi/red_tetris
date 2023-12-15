@@ -4,9 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import RoomPlayerList from "../../../components/room/RoomPlayerList/RoomPlayerList";
 import { useCallback, useEffect, useState } from "react";
 import { useSocket } from "../../../context/SocketContext";
-import { CHANGE_GAME_STATE, SET_ROOM } from "../../../actions/tetris.types";
 import StartRoomComponent from "../../../components/room/startRoom/StartRoomComponent";
-import { ERoomStatus, addPlayerToRoom } from "../../../slice/tetrisSlice";
+import { ERoomStatus, addPlayerToRoom, removePlayer, setGameState, setRoomId } from "../../../slice/tetrisSlice";
 import Tetris from "../tetris/Tetris";
 import Navbar from "../../../components/layout/Navbar";
 import { routes } from "../../../routes/route.constant";
@@ -33,13 +32,13 @@ export default function Room() {
     const tetris = useSelector(state => state.tetris);
 
     const joinRoom = useCallback((payload) => {
-        dispatch({ type: SET_ROOM, id: payload.id });
-        dispatch({ type: CHANGE_GAME_STATE, gameState: payload.status });
+        dispatch(setRoomId(payload));
+        dispatch(setGameState({ gameState: payload.status }));
         dispatch(addPlayerToRoom(payload));
     }, [dispatch]);
 
     const leftRoom = useCallback((payload) => {
-        dispatch({ type: 'tetris/removePlayer', id: payload.playerId });
+        dispatch(removePlayer(payload));
     }, [dispatch]);
 
 

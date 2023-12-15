@@ -1,6 +1,7 @@
 import { useDispatch } from "react-redux";
 import { useSocket } from "../../context/SocketContext";
 import { useEffect } from "react";
+import { blockPiece, breakLine, downGrid, freezeLine, newPiece, updatePiece, updateShadowBoard } from "../../slice/tetrisSlice";
 
 export default function GameEvent() {
     const dispatch = useDispatch();
@@ -8,48 +9,26 @@ export default function GameEvent() {
 
     useEffect(() => {
         socket?.on('newPiece', (payload) => {
-            dispatch({
-                type: 'tetris/newPiece', payload: {
-                    playerId: payload.playerId,
-                    tetromino: payload.tetromino,
-                    position: payload.position,
-                    nextPiece: payload.nextPiece
-                }
-            })
+            dispatch(newPiece(payload))
         })
 
         socket?.on('updatePiece', (payload) => {
-            dispatch({
-                type: 'tetris/updatePiece', payload: payload
-            })
-
+            dispatch(updatePiece(payload));
             if (payload.fixed) {
-                dispatch({
-                    type: 'tetris/blockPiece', payload: {
-                        playerId: (payload.playerId) ? payload.playerId : null
-                    }
-                })
+                dispatch(blockPiece({ playerId: (payload.playerId) ? payload.playerId : null }));
             }
         })
 
         socket?.on('freezeLine', (payload) => {
-            dispatch({
-                type: 'tetris/freezeLine', payload
-            })
+            dispatch(freezeLine(payload));
         })
         socket?.on('breakLine', (payload) => {
-            dispatch({
-                type: 'tetris/breakLine', payload
-            })
-            dispatch({
-                type: 'tetris/downGrid', payload
-            })
+            dispatch(breakLine(payload));
+            dispatch(downGrid(payload));
         })
 
         socket?.on('shadowBoard', (payload) => {
-            dispatch({
-                type: 'tetris/printShadowBoard', payload
-            })
+            dispatch(updateShadowBoard(payload));
         })
         return () => {
             socket?.off('updatePiece');

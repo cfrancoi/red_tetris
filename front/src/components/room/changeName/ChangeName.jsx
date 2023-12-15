@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { useSocket } from "../../../context/SocketContext";
 import { useCallback, useEffect } from "react";
-import { CHANGE_PSEUDO } from "../../../actions/tetris.types";
+import { changePseudo } from "../../../slice/tetrisSlice";
 
 const ChangeName = () => {
     const { register, handleSubmit } = useForm();
@@ -18,10 +18,7 @@ const ChangeName = () => {
     const changeName = useCallback((payload) => {
         console.log('[change_pseudo]');
 
-        dispatch({type: CHANGE_PSEUDO, payload});
-
-        console.log(payload)
-      
+        dispatch(changePseudo(payload));
     }, [dispatch]);
 
     useEffect(() => {

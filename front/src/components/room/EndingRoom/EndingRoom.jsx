@@ -5,6 +5,7 @@ import { useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSocket } from '../../../context/SocketContext';
 import GameResults from './GameResults';
+import { reset, resetGrid } from '../../../slice/tetrisSlice';
 
 function EndingRoom() {
     const tetris = useSelector(state => state.tetris);
@@ -14,7 +15,7 @@ function EndingRoom() {
     const { roomId } = useParams();
 
     const resetRoom = useCallback(() => {
-        dispatch({ type: 'tetris/reset' });
+        dispatch(reset());
     }, [dispatch]);
 
     const goHome = useCallback(() => {
@@ -23,7 +24,7 @@ function EndingRoom() {
     }, [resetRoom, navigate]);
 
     const restartRoom = useCallback(() => {
-        dispatch({ type: 'tetris/resetGrid' });
+        dispatch(resetGrid());
         socket.emit('restartRoom', roomId);
     }, [socket, roomId, dispatch]);
 
