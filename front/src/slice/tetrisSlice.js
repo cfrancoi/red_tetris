@@ -152,7 +152,8 @@ const tetrisSlice = createSlice({
       drawShadowBoard(player.grid, shadowboard);
     },
     setGameResult: (state, action) => {
-      state.result = action.payload.result;
+      if (action.payload?.result)
+        state.result = action.payload.result;
     },
     setPlayerName: (state, action) => {
       const playerId = action.payload.playerId;
