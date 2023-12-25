@@ -40,10 +40,15 @@ const tetrisSlice = createSlice({
       }
     },
     blockPiece: (state, action) => {
-      let player = getPlayer(state.players, action.payload.playerId);
-      updateGameGrid(player.grid, player.currentPiece, player.currentPiece.grid, true);
+      if (!action.payload)
+        return;
 
-      player.currentPiece = null;
+      let player = getPlayer(state.players, action.payload.playerId);
+      if (player) {
+        updateGameGrid(player.grid, player.currentPiece, player.currentPiece.grid, true);
+
+        player.currentPiece = null;
+      }
     },
     newPiece: (state, action) => {
 
@@ -96,7 +101,8 @@ const tetrisSlice = createSlice({
       state.players = state.players.filter(p => p.id !== action.payload.playerId);
     },
     setGameState: (state, action) => {
-      state.gameState = action.payload.gameState;
+      if (action.payload?.gameState)
+        state.gameState = action.payload.gameState;
     },
     reset: () => {
       return initialState;
@@ -106,7 +112,6 @@ const tetrisSlice = createSlice({
       )
     },
     breakLine: (state, action) => {
-      console.log("action = ", action);
       const lines = action.payload.listBreakline;
       const playerId = action.payload.playerId;
 
@@ -115,7 +120,6 @@ const tetrisSlice = createSlice({
       lines.forEach(line => {
         player.grid[line].fill({})
       })
-
     },
     downGrid: (state, action) => {
 
