@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { downOneLine, drawShadowBoard, getPlayer, updateGameGrid } from './utils/tetris.utils';
+import { freezeCell } from './utils/cell.constant';
 
 export const defaultHeight = 20;
 export const defaultWidth = 10;
@@ -20,6 +21,10 @@ export const initialState = {
   }
 }
 
+
+/**
+ * //TODO add inGame (bool) to each player to differentiate between players joining in current game
+ */
 const tetrisSlice = createSlice({
   name: "tetris",
   initialState: initialState,
@@ -35,7 +40,6 @@ const tetrisSlice = createSlice({
       }
     },
     blockPiece: (state, action) => {
-
       let player = getPlayer(state.players, action.payload.playerId);
       updateGameGrid(player.grid, player.currentPiece, player.currentPiece.grid, true);
 
@@ -135,7 +139,7 @@ const tetrisSlice = createSlice({
         for (let i = 0; i < freezeLineIdx; i++)
           player.grid[i] = player.grid[i + nbLine];
         for (let i = freezeLineIdx; i < freezeLineIdx + nbLine; i++)
-          player.grid[i] = new Array(player.grid[i].length).fill({ type: 'f', fixed: true });
+          player.grid[i] = new Array(player.grid[i].length).fill(freezeCell);
 
       }
     },
@@ -150,13 +154,12 @@ const tetrisSlice = createSlice({
     setGameResult: (state, action) => {
       state.result = action.payload.result;
     },
-    changePseudo: (state, action) => {
-
+    setPlayerName: (state, action) => {
       const playerId = action.payload.playerId;
 
       let player = getPlayer(state.players, playerId);
 
-      if (player) {
+      if (player && action.payload.name) {
         player.name = action.payload.name;
       }
     }
@@ -181,7 +184,7 @@ export const {
   downGrid,
   freezeLine,
   updateShadowBoard,
-  changePseudo
+  setPlayerName
 } = tetrisSlice.actions;
 
 export default tetrisSlice;

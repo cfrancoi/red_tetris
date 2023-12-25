@@ -8,6 +8,13 @@ export const PLAYER_ID_1 = 'sample1';
 
 
 /**
+ * NAME
+ */
+export const NAME_0 = 'sample';
+
+
+
+/**
  * PLAYER
  */
 
