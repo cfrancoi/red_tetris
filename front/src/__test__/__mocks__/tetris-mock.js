@@ -12,6 +12,11 @@ export const PLAYER_ID_1 = 'sample1';
  */
 export const NAME_0 = 'sample';
 
+/**
+ * RESULT
+ */
+export const RESULT_0 = [{ playerid: PLAYER_ID_0, score: 745, rank: 1 }];
+
 
 
 /**
