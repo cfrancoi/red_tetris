@@ -1,7 +1,7 @@
 
 
 
-// TODO cleanme move and import
+// TODO cleanme use alias (slice.action) n remove this file cause is useless after 
 const name = "auth"
 
 
