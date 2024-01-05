@@ -1,19 +1,20 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useSocket } from '../../../context/SocketContext';
 import { useCallback, useEffect } from 'react';
-import { ERoomStatus, setGameResult, setGameState } from '../../../slice/tetrisSlice';
+import { ERoomStatus, cleanRoom, setGameResult, setGameState, setPlayerInGame } from '../../../slice/tetrisSlice';
 
 
 export default function StartRoomComponent() {
+    const me = useSelector(state => (state.tetris.players.find(p => p.me)));
 
     const { socket } = useSocket();
     const roomId = useSelector(state => state.tetris.roomId);
     const dispatch = useDispatch();
 
     const startGame = useCallback(() => {
+        dispatch(setPlayerInGame({ inGame: true }));
         dispatch(setGameState({ gameState: ERoomStatus.IN_PROGRESS }))
     }, [dispatch])
-
 
     const restartRoom = useCallback((room) => {
         dispatch(setGameState({ gameState: room.status }));
@@ -21,7 +22,8 @@ export default function StartRoomComponent() {
 
     const gameOver = useCallback((room, result) => {
         dispatch(setGameState({ gameState: room.status }));
-        dispatch(setGameResult({ result }))
+        dispatch(setGameResult({ result }));
+        dispatch(cleanRoom());
     }, [dispatch])
 
     useEffect(() => {
@@ -46,7 +48,6 @@ export default function StartRoomComponent() {
         if (socket) {
             socket.on('roomGameOver', ({ room, result }) => {
 
-                console.log(room, result);
                 gameOver(room, result);
             })
         }
@@ -61,7 +62,13 @@ export default function StartRoomComponent() {
         socket.emit('startRoom', roomId);
     }
 
+    useEffect(() => { console.log(me) }, [me])
+
     return (
-        <button onClick={onClick}> START GAME </button>
+
+        <button onClick={onClick}>
+            START GAME
+            {`is Owner ${(me?.isOwner) ? 'owner' : 'not owner'}`}
+        </button>
     )
 }

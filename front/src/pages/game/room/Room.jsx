@@ -5,7 +5,7 @@ import RoomPlayerList from "../../../components/room/RoomPlayerList/RoomPlayerLi
 import { useCallback, useEffect, useState } from "react";
 import { useSocket } from "../../../context/SocketContext";
 import StartRoomComponent from "../../../components/room/startRoom/StartRoomComponent";
-import { ERoomStatus, addPlayerToRoom, removePlayer, setGameState, setRoomId } from "../../../slice/tetrisSlice";
+import { ERoomStatus, addPlayerToRoom, removePlayer, setGameState, setRoomId, updatePlayer } from "../../../slice/tetrisSlice";
 import Tetris from "../tetris/Tetris";
 import Navbar from "../../../components/layout/Navbar";
 import { routes } from "../../../routes/route.constant";
@@ -39,6 +39,7 @@ export default function Room() {
 
     const leftRoom = useCallback((payload) => {
         dispatch(removePlayer(payload));
+        dispatch(updatePlayer({ playerId: payload.owner, toUpdate: { isOwner: true } }))
     }, [dispatch]);
 
 

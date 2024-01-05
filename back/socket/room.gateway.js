@@ -31,7 +31,7 @@ module.exports = function (socket, roomManager, io) {
       player.data.tetrisRoomId = undefined;
 
       if (room)
-        player.to(roomId).emit('roomLeft', { roomId: roomId, playerId: player.id });
+        player.to(roomId).emit('roomLeft', { roomId: roomId, playerId: player.id, owner: room.owner().id });
     },
     onStart: (roomId, player, room) => {
       console.log(`game ${roomId} started by ${player.id}`);

@@ -13,6 +13,7 @@ module.exports = class TetrisGame {
 
     events = {
         onGameOver: (player) => {
+            player.gameOver = true;
             console.log('game over');
 
             player.rank = this.nextRank;
@@ -77,16 +78,20 @@ module.exports = class TetrisGame {
         this.nextRank = this.players.size;
     }
 
-    // Add a method to create a new player
     addPlayer(playerId) {
         const player = new Player(playerId, this);
         this.players.set(playerId, player);
         return player;
     }
 
-    // Add a method to remove a player
     removePlayer(playerId) {
         this.players.delete(playerId);
+    }
+
+    leave(playerId) {
+        if (playerId) {
+            this.events.onGameOver(this.players.get(playerId));
+        }
     }
 
     update_sequence() {
