@@ -90,7 +90,6 @@ module.exports = class TetrisPlayer {
     checkGameRules(onLose) {
         for (let j = 0; j < this.grid[0].length; j++) {
             if (this.grid[0][j] && this.grid[0][j].isFixed) {
-                this.gameOver = true;
                 return onLose(this);
             }
         }

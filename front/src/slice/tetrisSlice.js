@@ -98,7 +98,31 @@ const tetrisSlice = createSlice({
       state.players = result;
     },
     removePlayer: (state, action) => {
-      state.players = state.players.filter(p => p.id !== action.payload.playerId);
+      if (action.payload?.playerId) {
+        const player = getPlayer(state.players, action.payload.playerId);
+
+        if (state.gameState === ERoomStatus.IN_PROGRESS && player.inGame) {
+          player.hasLeft = true;
+        }
+        else {
+          state.players = state.players.filter(p => p.id !== action.payload.playerId);
+        }
+      }
+
+    },
+    updatePlayer: (state, action) => {
+      console.log("updatePlayer");
+
+      if (action.payload?.playerId) {
+        state.players = state.players.map(p => {
+          if (p.id !== action.payload.playerId)
+            return p;
+          else
+            return { ...p, ...action.payload.toUpdate }
+        })
+
+
+      }
     },
     setGameState: (state, action) => {
       if (action.payload?.gameState)
@@ -167,7 +191,21 @@ const tetrisSlice = createSlice({
       if (player && action.payload.name) {
         player.name = action.payload.name;
       }
-    }
+    },
+    setPlayerInGame: (state, action) => {
+      if (action.payload?.inGame) {
+        const inGame = action.payload.inGame;
+
+        state.players?.forEach(player => {
+          player.inGame = inGame;
+        })
+      }
+    },
+    cleanRoom: (state) => {
+      if (state.players) {
+        state.players = state.players.filter(p => p.hasLeft !== true);
+      }
+    },
   }
 
 })
@@ -189,7 +227,10 @@ export const {
   downGrid,
   freezeLine,
   updateShadowBoard,
-  setPlayerName
+  setPlayerName,
+  setPlayerInGame,
+  cleanRoom,
+  updatePlayer
 } = tetrisSlice.actions;
 
 export default tetrisSlice;

@@ -38,6 +38,9 @@ module.exports = class Room {
     }
 
     removePlayer(player) {
+        if (this.game) {
+            this.game.leave(player.id);
+        }
         this.players = this.players.filter(p => p.id !== player.id);
     }
 
@@ -57,7 +60,9 @@ module.exports = class Room {
             return playersToSend.push({
                 id: player.id,
                 name: (player?.data?.pseudo) ? player?.data?.pseudo : 'guest',
-                me: (idToCheck && player.id === idToCheck)
+                me: (idToCheck && player.id === idToCheck),
+                inGame: this.game?.players?.has(player.id),
+                isOwner: this.isOwner(player)
             })
         });
 
@@ -65,12 +70,15 @@ module.exports = class Room {
             id: this.id,
             status: this.status,
             players: playersToSend,
-            isOwner: this.isOwner(this)
         }
     }
 
+    owner() {
+        return this.players[0];
+    }
+
     isOwner(player) {
-        return (player === this.players[0]);
+        return (player.id === this.players[0].id);
     }
 
     start(player, io, onEnd) {

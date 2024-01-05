@@ -18,7 +18,7 @@ export default function ButtonLeaveRoom() {
 
     return (
         <>
-            {((tetris.gameState || tetris.gameState === 0) ? <button onClick={leaveRoom} style={{ background: 'red' }} >LEAVE</button > : <></>)
+            {((tetris.roomId || tetris.gameState || tetris.gameState === 0) ? <button onClick={leaveRoom} style={{ background: 'red' }} >LEAVE</button > : <></>)
             }
         </>
     )

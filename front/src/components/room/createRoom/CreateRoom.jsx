@@ -18,6 +18,7 @@ const CreateRoom = () => {
     }, [socket])
 
     const joinRoom = useCallback((payload) => {
+        console.log(payload);
         dispatch(setRoomId(payload));
         dispatch(setGameState({ gameState: payload.status }));
         dispatch(addPlayerToRoom(payload));

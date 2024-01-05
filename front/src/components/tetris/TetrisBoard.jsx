@@ -39,7 +39,7 @@ export default function TetrisBoard({ playerId, isControlled }) {
     if (e.keyCode === EKEYCODE.SPACE) {
       move(EMOVE.DROP)
     }
-    
+
   }, [move]);
 
   useEffect(() => {
