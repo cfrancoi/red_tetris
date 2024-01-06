@@ -62,6 +62,7 @@ module.exports = class Room {
                 name: (player?.data?.pseudo) ? player?.data?.pseudo : 'guest',
                 me: (idToCheck && player.id === idToCheck),
                 inGame: this.game?.players?.has(player.id),
+                hasLose: this.game?.players?.get(player.id)?.hasLose,
                 isOwner: this.isOwner(player)
             })
         });
