@@ -11,7 +11,7 @@ export default function Tetris() {
     return (
         <div className="tetris-list">
             {tetris.players.map(p => {
-                if (p.me && p.inGame) {
+                if (p.me && p.inGame && !p.hasLeft) {
                     return (
                         <>
                             <TetrisBoard key={p.id} height={20} width={10} playerId={p.id} isControlled={p.me} />
@@ -22,7 +22,7 @@ export default function Tetris() {
             })}
 
             {tetris.players.map(p => {
-                if (p.id && !p.me && p.inGame) {
+                if (p.id && (!p.me || p.hasLeft) && p.inGame) {
                     return (
                         <TetrisBoard key={p.id} height={20} width={10} playerId={p.id} isControlled={false} />
                     )

@@ -80,22 +80,29 @@ const tetrisSlice = createSlice({
       return ({ ...state, roomId: action.payload.id })
     },
     addPlayerToRoom: (state, action) => {
-      let toAdd = action.payload.players.filter(player => player || player?.id);
+      state.players = action.payload.players.map(p => {
+        if (p && p.id) {
+          let player = getPlayer(state.players, p.id);
 
-      toAdd = toAdd.filter(item1 => !state.players.some(item2 => item2.id === item1.id));
+          if (player) {
 
-      toAdd.forEach(p => {
-        p.grid = Array.from(Array(state.options.height), () => new Array(state.options.width).fill({}))
-        p.score = 0;
-        p.currentPiece = {
-          position: { x: 0, y: 0 },
-          grid: null,
+            if (player.hasLeft) {
+              player = { ...player, ...p, hasLeft: false }
+            }
+
+            return player;
+          }
+          else {
+            p.grid = Array.from(Array(state.options.height), () => new Array(state.options.width).fill({}))
+            p.score = 0;
+            p.currentPiece = {
+              position: { x: 0, y: 0 },
+              grid: null,
+            }
+            return p;
+          }
         }
       })
-
-      const result = state.players.concat(toAdd);
-
-      state.players = result;
     },
     removePlayer: (state, action) => {
       if (action.payload?.playerId) {
