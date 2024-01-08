@@ -17,7 +17,7 @@ module.exports = function (server) {
   io.on('connection', (socket) => {
     console.log('a user connected');
 
-    require('./user.gateway')(socket);
+    require('./user.gateway')(io, socket);
     require('./room.gateway')(socket, roomManager, io);
     socket.on('authentication', (accessToken) => {
       console.log(`accessToken: ${accessToken}`);

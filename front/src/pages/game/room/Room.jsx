@@ -13,6 +13,7 @@ import RoomStatus from "../../../components/room/roomStatus/RoomStatus";
 import EndingRoom from "../../../components/room/EndingRoom/EndingRoom";
 import GameEvent from "../../../components/tetris/GameEvent";
 import ChangeName from "../../../components/room/changeName/ChangeName";
+import PlayerNameEvent from "../../../components/room/changeName/PlayerNameEvent";
 
 
 const toPrint = [
@@ -26,7 +27,7 @@ export default function Room() {
 
     const { roomId } = useParams();
     const { socket } = useSocket();
-    const [nameIsSet, setNameIsSet] = useState(false);
+    // const [nameIsSet, setNameIsSet] = useState(false);
     const search = new URLSearchParams(useLocation().search);
     const dispatch = useDispatch();
     const tetris = useSelector(state => state.tetris);
@@ -43,22 +44,22 @@ export default function Room() {
     }, [dispatch]);
 
 
-    useEffect(() => {
-        if (socket && search.get('name') && !nameIsSet) {
-            socket.emit('change_pseudo', search.get('name'))
-            setNameIsSet(true);
-            return () => {
-            }
-        }
-    }, [nameIsSet, search, socket]);
+    // useEffect(() => {
+    //     if (socket && search.get('player_name') && !nameIsSet) {
+    //         socket.emit('change_pseudo', search.get('player_name'))
+    //         setNameIsSet(true);
+    //         return () => {
+    //         }
+    //     }
+    // }, [nameIsSet, search, socket]);
 
     useEffect(() => {
         if (socket && !tetris.roomId) {
-            socket.emit('requestRoom', roomId)
+            socket.emit('requestRoom', { roomId: roomId, name: search.get('player_name') });
             return () => {
             }
         }
-    }, [roomId, socket, tetris]);
+    }, [roomId, socket, tetris, search]);
 
     useEffect(() => {
         if (socket) {
@@ -85,6 +86,8 @@ export default function Room() {
             {tetris.gameState}
 
             <GameEvent />
+            <PlayerNameEvent />
+
 
             {toPrint[tetris.gameState]}
         </>

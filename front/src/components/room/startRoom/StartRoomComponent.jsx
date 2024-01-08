@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useSocket } from '../../../context/SocketContext';
 import { useCallback, useEffect } from 'react';
 import { ERoomStatus, cleanRoom, setGameResult, setGameState, setPlayerInGame } from '../../../slice/tetrisSlice';
-
+import './style.css';
 
 export default function StartRoomComponent() {
     const me = useSelector(state => (state.tetris.players.find(p => p.me)));
@@ -66,7 +66,7 @@ export default function StartRoomComponent() {
 
     return (
 
-        <button onClick={onClick}>
+        <button className={'start-button'} onClick={onClick}>
             START GAME
             {`is Owner ${(me?.isOwner) ? 'owner' : 'not owner'}`}
         </button>

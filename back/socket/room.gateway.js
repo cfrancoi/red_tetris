@@ -1,5 +1,6 @@
 const { Socket } = require("socket.io");
 const RoomManager = require("../Tetris/room/RoomManager.class");
+const setSocketName = require("../user/setSocketName");
 
 /**
  * @param {RoomManager} roomManager
@@ -55,7 +56,18 @@ module.exports = function (socket, roomManager, io) {
   }
 
   socket.on('requestRoom', (arg) => {
-    roomManager.addPlayerToRoom(arg, socket);
+
+    console.log(`set name1 ${arg.name}`);
+
+    setSocketName(io, socket, arg.name).then(() => {
+      socket.emit('change_pseudo', { playerId: socket.id, name: socket.data.name });
+
+      for (const dest of socket.rooms) {
+        socket.to(dest).emit('change_pseudo', { playerId: socket.id, name: socket.data.name });
+      }
+    })
+
+    roomManager.addPlayerToRoom(arg.roomId, socket);
   });
 
   //TODO CLEARME start game /!\

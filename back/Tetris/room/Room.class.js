@@ -5,6 +5,7 @@ const TetrisGame = require("../game/TetrisGame.class");
 const eventEmitter = require('../../events/GlobalEventEmitter');
 
 const tetrisEvent = require('../events/event.constant');
+const getSocketName = require("../../user/getSocketName");
 
 
 const EStatus = {
@@ -59,7 +60,7 @@ module.exports = class Room {
         this.players.forEach(player => {
             return playersToSend.push({
                 id: player.id,
-                name: (player?.data?.pseudo) ? player?.data?.pseudo : 'guest',
+                name: (getSocketName(player)) ? getSocketName(player) : 'guest',
                 me: (idToCheck && player.id === idToCheck),
                 inGame: this.game?.players?.has(player.id),
                 hasLose: this.game?.players?.get(player.id)?.hasLose,
