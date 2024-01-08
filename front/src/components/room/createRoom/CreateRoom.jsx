@@ -13,7 +13,7 @@ const CreateRoom = () => {
 
     const submitForm = useCallback((data) => {
         if (socket) {
-            socket.emit('requestRoom', data.roomId)
+            socket.emit('requestRoom', { roomId: data.roomId })
         }
     }, [socket])
 
